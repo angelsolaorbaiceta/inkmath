@@ -1,6 +1,10 @@
 package mat
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/angelsolaorbaiceta/inkmath/vec"
+)
 
 /* Set & Get Values */
 func TestSetNonZeroValue(t *testing.T) {
@@ -29,4 +33,18 @@ func TestNonAssignedValueIsZero(t *testing.T) {
 	}
 }
 
-/* Add to value */
+/* Operations */
+func TestSparseMatrixTimesVector(t *testing.T) {
+	mat := MakeSparse(2, 2)
+	mat.SetValue(0, 0, 1.0)
+	mat.SetValue(0, 1, 2.0)
+	mat.SetValue(1, 0, 3.0)
+	mat.SetValue(1, 1, 4.0)
+	v := vec.MakeWithValues([]float64{5.0, 6.0})
+	_, prod := mat.TimesVector(v)
+	expectedVec := vec.MakeWithValues([]float64{17.0, 39.0})
+
+	if !prod.Equals(expectedVec) {
+		t.Errorf("Wrong multiplication. Expected %v but got %v", expectedVec, prod)
+	}
+}

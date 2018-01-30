@@ -1,7 +1,10 @@
 package mat
 
 import (
+	"errors"
+
 	"github.com/angelsolaorbaiceta/inkmath"
+	"github.com/angelsolaorbaiceta/inkmath/vec"
 )
 
 /*
@@ -22,10 +25,10 @@ func MakeSparse(rows, cols int) *SparseMat {
 /* ::::::::::::::: Properties ::::::::::::::: */
 
 // Rows returns the number of rows in the matrix.
-func (m SparseMat) Rows() int { return m.Rows() }
+func (m SparseMat) Rows() int { return m.rows }
 
 // Cols returns the number of columns in the matrix.
-func (m SparseMat) Cols() int { return m.Cols() }
+func (m SparseMat) Cols() int { return m.cols }
 
 /* ::::::::::::::: Methods ::::::::::::::: */
 
@@ -85,4 +88,25 @@ TimesInPlace multiplies this matrix times other and sets the result in this matr
 */
 func (m SparseMat) TimesInPlace(other Matrixable) error {
 	return nil
+}
+
+func (m SparseMat) TimesVector(v *vec.Vector) (error, *vec.Vector) {
+	if m.Cols() != v.Length() {
+		return errors.New("Can't multiply matrix vs vector due to size mismatch"), nil
+	}
+
+	var (
+		result = vec.Make(m.Cols())
+		sum    float64
+	)
+
+	for i := 0; i < m.Rows(); i++ {
+		sum = 0.0
+		for j := 0; j < m.Cols(); j++ {
+			sum += m.Value(i, j) * v.Value(j)
+		}
+		result.SetValue(i, sum)
+	}
+
+	return nil, result
 }

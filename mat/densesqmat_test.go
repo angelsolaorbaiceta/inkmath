@@ -1,6 +1,10 @@
 package mat
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/angelsolaorbaiceta/inkmath/vec"
+)
 
 func TestAddInPlace(t *testing.T) {
 	matA, matB := makeTestMatrices()
@@ -35,6 +39,21 @@ func TestMultiplyInPlace(t *testing.T) {
 	}
 	if val := matA.Value(1, 1); val != 10.0 {
 		t.Errorf("Wrong multiplication. Expected 10.0, got %f", val)
+	}
+}
+
+func TestDenseSquareMatrixTimesVector(t *testing.T) {
+	mat := MakeSquareDense(2)
+	mat.SetValue(0, 0, 1.0)
+	mat.SetValue(0, 1, 2.0)
+	mat.SetValue(1, 0, 3.0)
+	mat.SetValue(1, 1, 4.0)
+	v := vec.MakeWithValues([]float64{5.0, 6.0})
+	_, prod := mat.TimesVector(v)
+	expectedVec := vec.MakeWithValues([]float64{17.0, 39.0})
+
+	if !prod.Equals(expectedVec) {
+		t.Errorf("Wrong multiplication. Expected %v but got %v", expectedVec, prod)
 	}
 }
 

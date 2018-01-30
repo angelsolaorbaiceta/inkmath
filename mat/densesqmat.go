@@ -1,6 +1,10 @@
 package mat
 
-import "errors"
+import (
+	"errors"
+
+	"github.com/angelsolaorbaiceta/inkmath/vec"
+)
 
 /*
 DenseSqMat is an implementation of a dense Matrixable with the same number of rows and columns,
@@ -98,4 +102,25 @@ func (m *DenseSqMat) TimesInPlace(other Matrixable) error {
 	}
 
 	return nil
+}
+
+func (m DenseSqMat) TimesVector(v *vec.Vector) (error, *vec.Vector) {
+	if m.Cols() != v.Length() {
+		return errors.New("Can't multiply matrix vs vector due to size mismatch"), nil
+	}
+
+	var (
+		result = vec.Make(m.Cols())
+		sum    float64
+	)
+
+	for i := 0; i < m.Rows(); i++ {
+		sum = 0.0
+		for j := 0; j < m.Cols(); j++ {
+			sum += m.data[i][j] * v.Value(j)
+		}
+		result.SetValue(i, sum)
+	}
+
+	return nil, result
 }

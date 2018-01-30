@@ -63,14 +63,41 @@ func (v Vector) Equals(other *Vector) bool {
 
 // Plus adds two vectors.
 func (v Vector) Plus(other *Vector) *Vector {
+	return operateWithVectors(&v, other, func(a float64, b float64) float64 {
+		return a + b
+	})
+}
+
+// Minus subtracts two vectors.
+func (v Vector) Minus(other *Vector) *Vector {
+	return operateWithVectors(&v, other, func(a float64, b float64) float64 {
+		return a - b
+	})
+}
+
+func operateWithVectors(u, v *Vector, operation func(float64, float64) float64) *Vector {
+	if u.length != v.length {
+		panic("Cannot operate with vectors of different sizes")
+	}
+
+	result := Make(u.length)
+	for i := 0; i < u.length; i++ {
+		result.data[i] = operation(u.data[i], v.data[i])
+	}
+
+	return result
+}
+
+// Times multiplies two vectors as v' · other.
+func (v Vector) Times(other *Vector) float64 {
 	if v.length != other.length {
-		panic("Cannot sum vectors of different sizes")
+		panic("Cannot operate with vectors of different sizes")
 	}
 
-	sum := Make(v.length)
+	result := 0.0
 	for i := 0; i < v.length; i++ {
-		sum.data[i] = v.data[i] + other.data[i]
+		result += v.data[i] * other.data[i]
 	}
 
-	return sum
+	return result
 }
