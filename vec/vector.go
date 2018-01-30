@@ -1,6 +1,10 @@
 package vec
 
-import "github.com/angelsolaorbaiceta/inkmath"
+import (
+	"errors"
+
+	"github.com/angelsolaorbaiceta/inkmath"
+)
 
 // Vector is an array of values.
 type Vector struct {
@@ -62,22 +66,22 @@ func (v Vector) Equals(other *Vector) bool {
 /* ::::::::::::::: Operations ::::::::::::::: */
 
 // Plus adds two vectors.
-func (v Vector) Plus(other *Vector) *Vector {
+func (v Vector) Plus(other *Vector) (*Vector, error) {
 	return operateWithVectors(&v, other, func(a float64, b float64) float64 {
 		return a + b
 	})
 }
 
 // Minus subtracts two vectors.
-func (v Vector) Minus(other *Vector) *Vector {
+func (v Vector) Minus(other *Vector) (*Vector, error) {
 	return operateWithVectors(&v, other, func(a float64, b float64) float64 {
 		return a - b
 	})
 }
 
-func operateWithVectors(u, v *Vector, operation func(float64, float64) float64) *Vector {
+func operateWithVectors(u, v *Vector, operation func(float64, float64) float64) (*Vector, error) {
 	if u.length != v.length {
-		panic("Cannot operate with vectors of different sizes")
+		return nil, errors.New("Cannot operate with vectors of different sizes")
 	}
 
 	result := Make(u.length)
@@ -85,13 +89,13 @@ func operateWithVectors(u, v *Vector, operation func(float64, float64) float64) 
 		result.data[i] = operation(u.data[i], v.data[i])
 	}
 
-	return result
+	return result, nil
 }
 
 // Times multiplies two vectors as v' · other.
-func (v Vector) Times(other *Vector) float64 {
+func (v Vector) Times(other *Vector) (float64, error) {
 	if v.length != other.length {
-		panic("Cannot operate with vectors of different sizes")
+		return 0.0, errors.New("Cannot operate with vectors of different sizes")
 	}
 
 	result := 0.0
@@ -99,5 +103,5 @@ func (v Vector) Times(other *Vector) float64 {
 		result += v.data[i] * other.data[i]
 	}
 
-	return result
+	return result, nil
 }

@@ -9,7 +9,7 @@ import (
 func TestAdd(t *testing.T) {
 	u := MakeWithValues([]float64{1, 2})
 	v := MakeWithValues([]float64{3, 4})
-	sum := u.Plus(v)
+	sum, _ := u.Plus(v)
 	expectedSum := MakeWithValues([]float64{4, 6})
 
 	if !sum.Equals(expectedSum) {
@@ -20,7 +20,7 @@ func TestAdd(t *testing.T) {
 func TestSubtract(t *testing.T) {
 	u := MakeWithValues([]float64{1, 2})
 	v := MakeWithValues([]float64{5, 4})
-	sub := u.Minus(v)
+	sub, _ := u.Minus(v)
 	expectedSub := MakeWithValues([]float64{-4, -2})
 
 	if !sub.Equals(expectedSub) {
@@ -31,7 +31,7 @@ func TestSubtract(t *testing.T) {
 func TestMultiply(t *testing.T) {
 	u := MakeWithValues([]float64{1, 2})
 	v := MakeWithValues([]float64{3, 4})
-	prod := u.Times(v)
+	prod, _ := u.Times(v)
 	expectedProd := 11.0
 
 	if !inkmath.FuzzyEqual(prod, expectedProd) {
