@@ -57,13 +57,18 @@ func (m *SparseMat) setValueToAdd(row, col int, value float64) {
 }
 
 func (m *SparseMat) removeValueAt(row, col int) {
-	if dataRow, ok := m.data[row]; ok {
+	if dataRow, hasRow := m.data[row]; hasRow {
 		delete(dataRow, col)
 	}
 }
 
 // AddToValue adds the given value to the existing value in the indicated row and column.
-func (m *SparseMat) AddToValue(int, int, float64) {
+func (m *SparseMat) AddToValue(row, col int, value float64) {
+	if dataRow, hasRow := m.data[row]; hasRow {
+		dataRow[col] += value
+	} else {
+		m.SetValue(row, col, value)
+	}
 }
 
 /* ::::::::::::::: Operations ::::::::::::::: */
