@@ -103,10 +103,10 @@ func (m SparseMat) TimesVector(v *vec.Vector) (*vec.Vector, error) {
 		sum    float64
 	)
 
-	for i := 0; i < m.Rows(); i++ {
+	for i, row := range m.data {
 		sum = 0.0
-		for j := 0; j < m.Cols(); j++ {
-			sum += m.Value(i, j) * v.Value(j)
+		for j, val := range row {
+			sum += val * v.Value(j)
 		}
 		result.SetValue(i, sum)
 	}
