@@ -19,7 +19,7 @@ type ConjugateGradientSolver struct {
 Solve solves the system of equations iteratively until a sufficiently good solution is found
 or the maximum number of iterations reached.
 */
-func (solver ConjugateGradientSolver) Solve(m mat.Matrixable, v *vec.Vector) *vec.Vector {
+func (solver ConjugateGradientSolver) Solve(m mat.Matrixable, v *vec.Vector) *LineqSolution {
 	// var (
 	// 	size     = v.Length()
 	// 	sol      = vec.Make(size)
@@ -31,5 +31,5 @@ func (solver ConjugateGradientSolver) Solve(m mat.Matrixable, v *vec.Vector) *ve
 	// 	return residual < solver.MaxError
 	// }
 
-	return v
+	return &LineqSolution{false, 0, 1.0, v}
 }

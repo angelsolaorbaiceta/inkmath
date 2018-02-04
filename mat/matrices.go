@@ -18,7 +18,7 @@ IsSymmetric returns true if the given matrix is square and equals to it's traspo
 */
 func IsSymmetric(m Matrixable) bool {
 	if !IsSquare(m) {
-		panic("Matrix symeetry only applies to square matrices")
+		panic("Matrix symmetry only applies to square matrices")
 	}
 
 	for i := 0; i < m.Rows(); i++ {
@@ -52,4 +52,21 @@ func IsRowDominant(m Matrixable) bool {
 	}
 
 	return true
+}
+
+/*
+HasZeroInMainDiagonal returns true if a zero is found in the matrix main diagonal.
+*/
+func HasZeroInMainDiagonal(m Matrixable) bool {
+	if !IsSquare(m) {
+		panic("Matrix main diagonal only applies to square matrices")
+	}
+
+	for i := 0; i < m.Rows(); i++ {
+		if inkmath.IsCloseToZero(m.Value(i, i)) {
+			return true
+		}
+	}
+
+	return false
 }

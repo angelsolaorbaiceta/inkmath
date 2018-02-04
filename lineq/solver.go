@@ -9,5 +9,5 @@ import (
 Solver is a linear equation system solver.
 */
 type Solver interface {
-	Solve(m mat.Matrixable, v *vec.Vector) *vec.Vector
+	Solve(m mat.Matrixable, v *vec.Vector) *LineqSolution
 }
