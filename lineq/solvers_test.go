@@ -1,6 +1,7 @@
 package lineq
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/angelsolaorbaiceta/inkmath/mat"
@@ -10,10 +11,11 @@ import (
 /* <--------------- System 2x2 ---------------> */
 func TestCGSolveSystem2x2(t *testing.T) {
 	m, v := makeSystem2x2()
-	solver := ConjugateGradientSolver{1e-10, 50}
+	solver := ConjugateGradientSolver{1e-10, 2}
 
 	if sol := solver.Solve(m, v); !sol.Solution.Equals(expectedSol2x2) {
 		t.Errorf("Wrong solution, Expected %v, but got %v", expectedSol2x2, sol)
+		fmt.Println(sol.Solution)
 	}
 }
 

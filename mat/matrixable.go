@@ -22,5 +22,5 @@ type Matrixable interface {
 	AddInPlace(other Matrixable) error
 	TimesInPlace(other Matrixable) error
 
-	TimesVector(v *vec.Vector) (*vec.Vector, error)
+	TimesVector(v *vec.Vector) *vec.Vector
 }

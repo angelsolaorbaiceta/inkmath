@@ -49,7 +49,7 @@ func TestDenseSquareMatrixTimesVector(t *testing.T) {
 	mat.SetValue(1, 0, 3.0)
 	mat.SetValue(1, 1, 4.0)
 	v := vec.MakeWithValues([]float64{5.0, 6.0})
-	prod, _ := mat.TimesVector(v)
+	prod := mat.TimesVector(v)
 	expectedVec := vec.MakeWithValues([]float64{17.0, 39.0})
 
 	if !prod.Equals(expectedVec) {

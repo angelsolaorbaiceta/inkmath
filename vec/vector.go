@@ -1,7 +1,7 @@
 package vec
 
 import (
-	"errors"
+	"math"
 
 	"github.com/angelsolaorbaiceta/inkmath"
 )
@@ -36,6 +36,16 @@ func (v Vector) Length() int {
 	return v.length
 }
 
+// Norm returns the L2-norm of the vector.
+func (v Vector) Norm() float64 {
+	norm := 0.0
+	for _, val := range v.data {
+		norm += val * val
+	}
+
+	return math.Sqrt(norm)
+}
+
 /* ::::::::::::::: Methods ::::::::::::::: */
 
 // SetValue sets the given value at the given index.
@@ -63,25 +73,59 @@ func (v Vector) Equals(other *Vector) bool {
 	return true
 }
 
+func (v Vector) Clone() *Vector {
+	vec := Make(v.Length())
+	for i, val := range v.data {
+		vec.data[i] = val
+	}
+
+	return vec
+}
+
+/*
+Opposite creates a new vector which is the opposite of this one, that is,
+points in the opposite direction.
+*/
+func (v Vector) Opposite() *Vector {
+	opposite := Make(v.Length())
+	for i, val := range v.data {
+		opposite.data[i] = -val
+	}
+
+	return opposite
+}
+
+/*
+Scaled creates a new vector consisting on the scaled projections of this vector.
+*/
+func (v Vector) Scaled(factor float64) *Vector {
+	scaled := Make(v.Length())
+	for i, val := range v.data {
+		scaled.data[i] = val * factor
+	}
+
+	return scaled
+}
+
 /* ::::::::::::::: Operations ::::::::::::::: */
 
 // Plus adds two vectors.
-func (v Vector) Plus(other *Vector) (*Vector, error) {
+func (v Vector) Plus(other *Vector) *Vector {
 	return operateWithVectors(&v, other, func(a float64, b float64) float64 {
 		return a + b
 	})
 }
 
 // Minus subtracts two vectors.
-func (v Vector) Minus(other *Vector) (*Vector, error) {
+func (v Vector) Minus(other *Vector) *Vector {
 	return operateWithVectors(&v, other, func(a float64, b float64) float64 {
 		return a - b
 	})
 }
 
-func operateWithVectors(u, v *Vector, operation func(float64, float64) float64) (*Vector, error) {
+func operateWithVectors(u, v *Vector, operation func(float64, float64) float64) *Vector {
 	if u.length != v.length {
-		return nil, errors.New("Cannot operate with vectors of different sizes")
+		panic("Cannot operate with vectors of different sizes")
 	}
 
 	result := Make(u.length)
@@ -89,13 +133,13 @@ func operateWithVectors(u, v *Vector, operation func(float64, float64) float64) 
 		result.data[i] = operation(u.data[i], v.data[i])
 	}
 
-	return result, nil
+	return result
 }
 
 // Times multiplies two vectors as v' · other.
-func (v Vector) Times(other *Vector) (float64, error) {
+func (v Vector) Times(other *Vector) float64 {
 	if v.length != other.length {
-		return 0.0, errors.New("Cannot operate with vectors of different sizes")
+		panic("Cannot operate with vectors of different sizes")
 	}
 
 	result := 0.0
@@ -103,5 +147,5 @@ func (v Vector) Times(other *Vector) (float64, error) {
 		result += v.data[i] * other.data[i]
 	}
 
-	return result, nil
+	return result
 }

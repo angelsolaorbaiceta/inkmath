@@ -20,6 +20,17 @@ type JacobiSolver struct {
 /* ::::::::::::::: Methods : Solver ::::::::::::::: */
 
 /*
+CanSolve returns whether Jacobi is suitable for solving the given system of equations.
+
+The conditions required are:
+    - System matrix is square
+    - System matrix and vector have same size
+*/
+func (solver JacobiSolver) CanSolve(m mat.Matrixable, v *vec.Vector) bool {
+	return mat.IsSquare(m) && m.Rows() == v.Length()
+}
+
+/*
 Solve solves the system of equations iteratively until a sufficiently good solution is found
 or the maximum number of iterations reached.
 */
@@ -32,8 +43,7 @@ func (solver JacobiSolver) Solve(m mat.Matrixable, v *vec.Vector) *LineqSolution
 	)
 
 	solGoodEnough := func() bool {
-		vec, _ := m.TimesVector(solution)
-		residual, _ := vec.Minus(v)
+		residual := m.TimesVector(solution).Minus(v)
 
 		for i := 0; i < size; i++ {
 			if err := math.Abs(residual.Value(i)); err > solver.MaxError {
@@ -47,8 +57,7 @@ func (solver JacobiSolver) Solve(m mat.Matrixable, v *vec.Vector) *LineqSolution
 
 	improveSol := func() {
 		var diagonalValue float64
-		newSolutionTmp, _ := m.TimesVector(solution)
-		newSolution, _ := v.Minus(newSolutionTmp)
+		newSolution := v.Minus(m.TimesVector(solution))
 
 		for i := 0; i < size; i++ {
 			diagonalValue = m.Value(i, i)
@@ -74,5 +83,5 @@ func (solver JacobiSolver) Solve(m mat.Matrixable, v *vec.Vector) *LineqSolution
 	if iter >= solver.MaxIter {
 		return makeErrorSolution(iter, solutionError, solution)
 	}
-	return makeSolution(iter, solution)
+	return makeSolution(iter, solver.MaxError, solution)
 }

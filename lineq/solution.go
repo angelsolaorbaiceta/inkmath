@@ -1,6 +1,10 @@
 package lineq
 
-import "github.com/angelsolaorbaiceta/inkmath/vec"
+import (
+	"fmt"
+
+	"github.com/angelsolaorbaiceta/inkmath/vec"
+)
 
 /*
 LineqSolution is the solution data for a linear equation system solver.
@@ -14,10 +18,10 @@ type LineqSolution struct {
 
 /* ::::::::::::::: Construction ::::::::::::::: */
 
-func makeSolution(iterCount int, solution *vec.Vector) *LineqSolution {
+func makeSolution(iterCount int, minError float64, solution *vec.Vector) *LineqSolution {
 	return &LineqSolution{
 		ReachedMaxIter: false,
-		MinError:       0.0,
+		MinError:       minError,
 		IterCount:      iterCount,
 		Solution:       solution,
 	}
@@ -30,4 +34,19 @@ func makeErrorSolution(iterCount int, minError float64, partialSolution *vec.Vec
 		IterCount:      iterCount,
 		Solution:       partialSolution,
 	}
+}
+
+/* ::::::::::::::: Methods ::::::::::::::: */
+func (sol LineqSolution) String() string {
+	if sol.ReachedMaxIter {
+		return fmt.Sprintf(
+			"[KO] -> Min Error: %f, Iter Count: %d",
+			sol.MinError, sol.IterCount,
+		)
+	}
+
+	return fmt.Sprintf(
+		"[OK] -> Iter Count: %d, Min Error: %f, Solution: %v",
+		sol.IterCount, sol.MinError, sol.Solution,
+	)
 }

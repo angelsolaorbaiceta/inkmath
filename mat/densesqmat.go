@@ -107,9 +107,9 @@ func (m *DenseSqMat) TimesInPlace(other Matrixable) error {
 /*
 TimesVector multiplies this matrix and a vector.
 */
-func (m DenseSqMat) TimesVector(v *vec.Vector) (*vec.Vector, error) {
+func (m DenseSqMat) TimesVector(v *vec.Vector) *vec.Vector {
 	if m.Cols() != v.Length() {
-		return nil, errors.New("Can't multiply matrix vs vector due to size mismatch")
+		panic("Can't multiply matrix vs vector due to size mismatch")
 	}
 
 	var (
@@ -125,5 +125,5 @@ func (m DenseSqMat) TimesVector(v *vec.Vector) (*vec.Vector, error) {
 		result.SetValue(i, sum)
 	}
 
-	return result, nil
+	return result
 }

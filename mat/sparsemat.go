@@ -1,8 +1,6 @@
 package mat
 
 import (
-	"errors"
-
 	"github.com/angelsolaorbaiceta/inkmath"
 	"github.com/angelsolaorbaiceta/inkmath/vec"
 )
@@ -93,9 +91,9 @@ func (m SparseMat) TimesInPlace(other Matrixable) error {
 /*
 TimesVector multiplies this matrix and a vector.
 */
-func (m SparseMat) TimesVector(v *vec.Vector) (*vec.Vector, error) {
+func (m SparseMat) TimesVector(v *vec.Vector) *vec.Vector {
 	if m.Cols() != v.Length() {
-		return nil, errors.New("Can't multiply matrix vs vector due to size mismatch")
+		panic("Can't multiply matrix vs vector due to size mismatch")
 	}
 
 	var (
@@ -111,5 +109,5 @@ func (m SparseMat) TimesVector(v *vec.Vector) (*vec.Vector, error) {
 		result.SetValue(i, sum)
 	}
 
-	return result, nil
+	return result
 }
