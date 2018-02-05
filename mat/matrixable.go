@@ -18,6 +18,9 @@ type Matrixable interface {
 	SetValue(int, int, float64)
 	AddToValue(int, int, float64)
 
+	SetZeroCol(int)
+	SetIdentityRow(int)
+
 	/* Operations */
 	AddInPlace(other Matrixable) error
 	TimesInPlace(other Matrixable) error

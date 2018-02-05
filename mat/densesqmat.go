@@ -42,13 +42,21 @@ func (m DenseSqMat) Value(row, col int) float64 {
 }
 
 // SetValue sets a value for a given row and column.
-func (m DenseSqMat) SetValue(row, col int, value float64) {
+func (m *DenseSqMat) SetValue(row, col int, value float64) {
 	m.data[row][col] = value
 }
 
 // AddToValue adds the given value to the existing value in the indicated row and column.
-func (m DenseSqMat) AddToValue(row, col int, value float64) {
+func (m *DenseSqMat) AddToValue(row, col int, value float64) {
 	m.data[row][col] += value
+}
+
+func (m *DenseSqMat) SetZeroCol(int) {
+	panic("Implement me")
+}
+
+func (m *DenseSqMat) SetIdentityRow(int) {
+	panic("Implement me")
 }
 
 /* ::::::::::::::: Operations ::::::::::::::: */

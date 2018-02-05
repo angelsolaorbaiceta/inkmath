@@ -58,15 +58,14 @@ func (solver ConjugateGradientSolver) Solve(a mat.Matrixable, b *vec.Vector) *Li
 
 	// Iteration loop
 	for iter = 0; iter < solver.MaxIter; iter++ {
-		alpha = r.Times(r) / p.Times(a.TimesVector(p))
-		x = x.Plus(p.Scaled(alpha))
-		oldr = r.Clone()
-		r = r.Minus(a.TimesVector(p).Scaled(alpha))
-
 		if solutionGoodEnough() {
 			return makeSolution(iter, solver.MaxError, x)
 		}
 
+		alpha = r.Times(r) / p.Times(a.TimesVector(p))
+		x = x.Plus(p.Scaled(alpha))
+		oldr = r.Clone()
+		r = r.Minus(a.TimesVector(p).Scaled(alpha))
 		beta = r.Times(r) / oldr.Times(oldr)
 		p = r.Plus(p.Scaled(beta))
 	}

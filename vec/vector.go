@@ -53,6 +53,11 @@ func (v *Vector) SetValue(i int, value float64) {
 	v.data[i] = value
 }
 
+// SetZero sets a zero value in the given index.
+func (v *Vector) SetZero(i int) {
+	v.data[i] = 0.0
+}
+
 // Value returns the value at the given index.
 func (v Vector) Value(i int) float64 {
 	return v.data[i]

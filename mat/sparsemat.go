@@ -30,6 +30,25 @@ func (m SparseMat) Cols() int { return m.cols }
 
 /* ::::::::::::::: Methods ::::::::::::::: */
 
+// SetZeroCol sets all the values in the given column as zero.
+func (m *SparseMat) SetZeroCol(col int) {
+	for i := range m.data {
+		m.SetValue(i, col, 0.0)
+	}
+}
+
+/*
+SetIdentityRow sets the given row as identity: one in the main diagonal value,
+and zeroes in all other positions of the row.
+*/
+func (m *SparseMat) SetIdentityRow(row int) {
+	if _, hasRow := m.data[row]; hasRow {
+		delete(m.data, row)
+	}
+
+	m.SetValue(row, row, 1.0)
+}
+
 // Value returns the value at a given row and column.
 func (m SparseMat) Value(row, col int) float64 {
 	if dataRow, hasRow := m.data[row]; hasRow {
