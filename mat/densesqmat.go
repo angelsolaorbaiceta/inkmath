@@ -51,10 +51,15 @@ func (m *DenseSqMat) AddToValue(row, col int, value float64) {
 	m.data[row][col] += value
 }
 
+// SetZeroCol sets all the values in the given column as zero.
 func (m *DenseSqMat) SetZeroCol(int) {
 	panic("Implement me")
 }
 
+/*
+SetIdentityRow sets the given row as identity: one in the main diagonal value,
+and zeroes in all other positions of the row.
+*/
 func (m *DenseSqMat) SetIdentityRow(int) {
 	panic("Implement me")
 }

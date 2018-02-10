@@ -1,7 +1,6 @@
 package mat
 
 import (
-	"fmt"
 	"image"
 	"image/color"
 	"image/png"
@@ -85,7 +84,7 @@ as many height pixels as rows. Each pixel will be coloured:
 	- Red if matrix value is positive
 	- Blue if matrix value is negative
 */
-func ToImage(m Matrixable, path, fileName string) {
+func ToImage(m Matrixable, filePath string) {
 	var (
 		width     = m.Cols()
 		height    = m.Rows()
@@ -109,7 +108,7 @@ func ToImage(m Matrixable, path, fileName string) {
 		}
 	}
 
-	f, _ := os.OpenFile(fmt.Sprintf("%s/%s.png", path, fileName), os.O_WRONLY|os.O_CREATE, 0600)
+	f, _ := os.OpenFile(filePath+"_sysmat.png", os.O_WRONLY|os.O_CREATE, 0600)
 	defer f.Close()
 	png.Encode(f, img)
 }
