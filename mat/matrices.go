@@ -1,7 +1,12 @@
 package mat
 
 import (
+	"fmt"
+	"image"
+	"image/color"
+	"image/png"
 	"math"
+	"os"
 
 	"github.com/angelsolaorbaiceta/inkmath"
 )
@@ -69,4 +74,42 @@ func HasZeroInMainDiagonal(m Matrixable) bool {
 	}
 
 	return false
+}
+
+/* ::::::::::::::: Image ::::::::::::::: */
+
+/*
+ToImage creates an image with as many width pixels as columns has the matrix and
+as many height pixels as rows. Each pixel will be coloured:
+	- Gray if matrix value is zero
+	- Red if matrix value is positive
+	- Blue if matrix value is negative
+*/
+func ToImage(m Matrixable, path, fileName string) {
+	var (
+		width     = m.Cols()
+		height    = m.Rows()
+		img       = image.NewRGBA(image.Rectangle{image.Point{0, 0}, image.Point{width, height}})
+		zeroColor = color.RGBA{230, 230, 230, 255}
+		posColor  = color.RGBA{255, 0, 0, 255}
+		negColor  = color.RGBA{0, 0, 255, 255}
+		val       float64
+	)
+
+	for row := 0; row < height; row++ {
+		for col := 0; col < width; col++ {
+			val = m.Value(row, col)
+			if inkmath.IsCloseToZero(val) {
+				img.Set(row, col, zeroColor)
+			} else if val > 0.0 {
+				img.Set(row, col, posColor)
+			} else {
+				img.Set(row, col, negColor)
+			}
+		}
+	}
+
+	f, _ := os.OpenFile(fmt.Sprintf("%s/%s.png", path, fileName), os.O_WRONLY|os.O_CREATE, 0600)
+	defer f.Close()
+	png.Encode(f, img)
 }
