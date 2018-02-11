@@ -130,3 +130,32 @@ func (m SparseMat) TimesVector(v *vec.Vector) *vec.Vector {
 
 	return result
 }
+
+/*
+TimesMatrix multiplies this matrix with other.
+*/
+func (m SparseMat) TimesMatrix(other Matrixable) Matrixable {
+	if m.Cols() != other.Rows() {
+		panic("Can't multiply matrices due to size mismatch")
+	}
+
+	var (
+		rows   = m.Rows()
+		cols   = other.Cols()
+		sum    float64
+		result = MakeSparse(rows, cols)
+	)
+
+	for i, row := range m.data {
+		for j := 0; j < cols; j++ {
+			sum = 0.0
+			for k, val := range row {
+				sum += val * other.Value(k, j)
+			}
+
+			result.SetValue(i, j, sum)
+		}
+	}
+
+	return result
+}
