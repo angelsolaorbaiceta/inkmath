@@ -11,7 +11,7 @@ import (
 )
 
 /*
-Are equal returns true iff matrices have same rows and columns with exactly
+AreEqual returns true iff matrices have same rows and columns with exactly
 the same values in matching positions.
 */
 func AreEqual(m1, m2 Matrixable) bool {
