@@ -11,6 +11,26 @@ import (
 )
 
 /*
+Are equal returns true iff matrices have same rows and columns with exactly
+the same values in matching positions.
+*/
+func AreEqual(m1, m2 Matrixable) bool {
+	if m1.Rows() != m2.Rows() || m1.Cols() != m2.Cols() {
+		return false
+	}
+
+	for i := 0; i < m1.Rows(); i++ {
+		for j := 0; j < m1.Cols(); j++ {
+			if !inkmath.FuzzyEqual(m1.Value(i, j), m2.Value(i, j)) {
+				return false
+			}
+		}
+	}
+
+	return true
+}
+
+/*
 IsSquare returns true if the given matrix has the same number of rows and columns.
 */
 func IsSquare(m Matrixable) bool {
