@@ -10,5 +10,5 @@ Solver is a linear equation system solver.
 */
 type Solver interface {
 	CanSolve(m mat.Matrixable, v *vec.Vector) bool
-	Solve(m mat.Matrixable, v *vec.Vector) *LineqSolution
+	Solve(m mat.Matrixable, v *vec.Vector) *Solution
 }

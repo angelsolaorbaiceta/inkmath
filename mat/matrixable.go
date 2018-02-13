@@ -27,6 +27,7 @@ type Matrixable interface {
 	AddInPlace(other Matrixable) error
 	TimesInPlace(other Matrixable) error
 
+	RowTimesVector(row int, v *vec.Vector) float64
 	TimesVector(v *vec.Vector) *vec.Vector
 	TimesMatrix(other Matrixable) Matrixable
 }

@@ -198,3 +198,24 @@ func (m DenseMat) TimesMatrix(other Matrixable) Matrixable {
 
 	return result
 }
+
+/*
+RowTimesVector returns the result of multiplying the row at the given index
+times the given vector.
+*/
+func (m DenseMat) RowTimesVector(row int, v *vec.Vector) float64 {
+	if m.Cols() != v.Length() {
+		panic("Can't multiply matrix row with vector due to size mismatch")
+	}
+
+	var (
+		rowData = m.data[row]
+		result  = 0.0
+	)
+
+	for i := 0; i < m.Cols(); i++ {
+		result += rowData[i] * v.Value(i)
+	}
+
+	return result
+}

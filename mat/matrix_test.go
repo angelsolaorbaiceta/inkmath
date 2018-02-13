@@ -9,7 +9,7 @@ import (
 
 /* <--------------- Dense ---------------> */
 
-func TestAddToValueDense(t *testing.T) {
+func TestDenseMatrixAddToValue(t *testing.T) {
 	m := MakeDense(2, 2)
 	m.AddToValue(0, 1, 5.0)
 	m.AddToValue(0, 1, 6.0)
@@ -19,7 +19,7 @@ func TestAddToValueDense(t *testing.T) {
 	}
 }
 
-func TestSetZeroColDense(t *testing.T) {
+func TestDenseMatrixSetZeroCol(t *testing.T) {
 	m := MakeDense(3, 3)
 	m.SetValue(0, 1, 1.0)
 	m.SetValue(1, 1, 2.0)
@@ -33,7 +33,7 @@ func TestSetZeroColDense(t *testing.T) {
 	}
 }
 
-func TestSetIdentityRowDense(t *testing.T) {
+func TestDenseMatrixSetIdentityRow(t *testing.T) {
 	m := MakeDense(3, 3)
 	m.SetValue(1, 0, 4.0)
 	m.SetValue(1, 1, 4.0)
@@ -99,7 +99,7 @@ func TestNonZeroIndicesInRowDense(t *testing.T) {
 /* <--------------- Sparse ---------------> */
 
 /* Set & Get Values */
-func TestSetNonZeroValueSparse(t *testing.T) {
+func TestSparseMatrixSetNonZeroValue(t *testing.T) {
 	m := MakeSparse(5, 5)
 	m.SetValue(1, 2, 7.5)
 
@@ -108,7 +108,7 @@ func TestSetNonZeroValueSparse(t *testing.T) {
 	}
 }
 
-func TestSetZeroValueRemovesValueSparse(t *testing.T) {
+func TestSparseMatrixSetZeroValueRemovesValue(t *testing.T) {
 	m := MakeSparse(5, 5)
 	m.SetValue(1, 2, 7.5)
 	m.SetValue(1, 2, 0.0)
@@ -118,14 +118,14 @@ func TestSetZeroValueRemovesValueSparse(t *testing.T) {
 	}
 }
 
-func TestNonAssignedValueIsZeroSparse(t *testing.T) {
+func TestSparseMatrixNonAssignedValueIsZero(t *testing.T) {
 	m := MakeSparse(2, 4)
 	if val := m.Value(1, 3); val != 0 {
 		t.Errorf("Value not as expected. Got %f", val)
 	}
 }
 
-func TestAddToValueSparse(t *testing.T) {
+func TestSparseMatrixAddToValue(t *testing.T) {
 	m := MakeSparse(2, 2)
 	m.AddToValue(0, 1, 5.0)
 	m.AddToValue(0, 1, 6.0)
@@ -135,7 +135,7 @@ func TestAddToValueSparse(t *testing.T) {
 	}
 }
 
-func TestSetZeroColSparse(t *testing.T) {
+func TestSparseMatrixSetZeroCol(t *testing.T) {
 	m := MakeSparse(3, 3)
 	m.SetValue(0, 1, 1.0)
 	m.SetValue(1, 1, 2.0)
@@ -149,7 +149,7 @@ func TestSetZeroColSparse(t *testing.T) {
 	}
 }
 
-func TestSetIdentityRowSparse(t *testing.T) {
+func TestSparseMatrixSetIdentityRow(t *testing.T) {
 	m := MakeSparse(3, 3)
 	m.SetValue(1, 0, 4.0)
 	m.SetValue(1, 1, 4.0)
@@ -163,7 +163,7 @@ func TestSetIdentityRowSparse(t *testing.T) {
 	}
 }
 
-func TestNonZeroIndicesInRowSparse(t *testing.T) {
+func TestSparseMatrixNonZeroIndicesInRow(t *testing.T) {
 	m := MakeSparse(3, 3)
 	m.SetValue(1, 1, 4.0)
 	indices := m.NonZeroIndicesAtRow(1)
@@ -173,6 +173,20 @@ func TestNonZeroIndicesInRowSparse(t *testing.T) {
 	}
 	if indices[0] != 1 {
 		t.Error("Non zero index expected to be 1")
+	}
+}
+
+func TestSparseIdentityMatrix(t *testing.T) {
+	identity := MakeIdentity(2)
+
+	for i := 0; i < 2; i++ {
+		for j := 0; j < 2; j++ {
+			if i == j && identity.Value(i, j) != 1.0 {
+				t.Error("Identity matrix should have ones in main diagonal")
+			} else if i != j && identity.Value(i, j) != 0.0 {
+				t.Error("Identity matrix should have zeroes out of the main diagonal")
+			}
+		}
 	}
 }
 

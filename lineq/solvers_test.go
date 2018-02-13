@@ -1,7 +1,6 @@
 package lineq
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/angelsolaorbaiceta/inkmath/mat"
@@ -15,13 +14,31 @@ func TestCGSolveSystem2x2(t *testing.T) {
 
 	if sol := solver.Solve(m, v); !sol.Solution.Equals(expectedSol2x2) {
 		t.Errorf("Wrong solution, Expected %v, but got %v", expectedSol2x2, sol)
-		fmt.Println(sol.Solution)
+	}
+}
+
+func TestPreconditionedWithIdentityCGSolveSystem2x2(t *testing.T) {
+	m, v := makeSystem2x2()
+	precond := mat.MakeIdentity(2)
+	solver := PreconditionedConjugateGradientSolver{precond, 1e-10, 2}
+
+	if sol := solver.Solve(m, v); !sol.Solution.Equals(expectedSol2x2) {
+		t.Errorf("Wrong solution, Expected %v, but got %v", expectedSol2x2, sol)
 	}
 }
 
 func TestJacobiSolveSystem2x2(t *testing.T) {
 	m, v := makeSystem2x2()
 	solver := JacobiSolver{1e-10, 50}
+
+	if sol := solver.Solve(m, v); !sol.Solution.Equals(expectedSol2x2) {
+		t.Errorf("Wrong solution, Expected %v, but got %v", expectedSol2x2, sol)
+	}
+}
+
+func TestGaussSeidelSolveSystem2x2(t *testing.T) {
+	m, v := makeSystem2x2()
+	solver := GaussSeidelSolver{1e-10, 50}
 
 	if sol := solver.Solve(m, v); !sol.Solution.Equals(expectedSol2x2) {
 		t.Errorf("Wrong solution, Expected %v, but got %v", expectedSol2x2, sol)

@@ -1,10 +1,8 @@
 package lineq
 
 import (
-	"fmt"
 	"math"
 
-	"github.com/angelsolaorbaiceta/inkmath"
 	"github.com/angelsolaorbaiceta/inkmath/mat"
 	"github.com/angelsolaorbaiceta/inkmath/vec"
 )
@@ -25,16 +23,17 @@ CanSolve returns whether Jacobi is suitable for solving the given system of equa
 The conditions required are:
     - System matrix is square
     - System matrix and vector have same size
+	- System matrix has no zeroes in main diagonal
 */
 func (solver JacobiSolver) CanSolve(m mat.Matrixable, v *vec.Vector) bool {
-	return mat.IsSquare(m) && m.Rows() == v.Length()
+	return mat.IsSquare(m) && m.Rows() == v.Length() && !mat.HasZeroInMainDiagonal(m)
 }
 
 /*
 Solve solves the system of equations iteratively until a sufficiently good solution is found
 or the maximum number of iterations reached.
 */
-func (solver JacobiSolver) Solve(m mat.Matrixable, v *vec.Vector) *LineqSolution {
+func (solver JacobiSolver) Solve(m mat.Matrixable, v *vec.Vector) *Solution {
 	var (
 		size          = v.Length()
 		solution      = vec.Make(size)
@@ -61,11 +60,6 @@ func (solver JacobiSolver) Solve(m mat.Matrixable, v *vec.Vector) *LineqSolution
 
 		for i := 0; i < size; i++ {
 			diagonalValue = m.Value(i, i)
-
-			if inkmath.IsCloseToZero(diagonalValue) {
-				fmt.Printf("Row %d\n", i)
-				panic("Found a main diagonal value of zero")
-			}
 
 			newSolution.SetValue(
 				i,

@@ -33,7 +33,7 @@ func (solver ConjugateGradientSolver) CanSolve(m mat.Matrixable, v *vec.Vector) 
 Solve solves the system of equations iteratively until a sufficiently good solution is found
 or the maximum number of iterations reached.
 */
-func (solver ConjugateGradientSolver) Solve(a mat.Matrixable, b *vec.Vector) *LineqSolution {
+func (solver ConjugateGradientSolver) Solve(a mat.Matrixable, b *vec.Vector) *Solution {
 	var (
 		size             = b.Length()
 		x                = vec.Make(size)

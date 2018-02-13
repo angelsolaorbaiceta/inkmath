@@ -7,9 +7,9 @@ import (
 )
 
 /*
-LineqSolution is the solution data for a linear equation system solver.
+Solution is the solution data for a linear equation system solver.
 */
-type LineqSolution struct {
+type Solution struct {
 	ReachedMaxIter bool
 	MinError       float64
 	IterCount      int
@@ -18,8 +18,8 @@ type LineqSolution struct {
 
 /* ::::::::::::::: Construction ::::::::::::::: */
 
-func makeSolution(iterCount int, minError float64, solution *vec.Vector) *LineqSolution {
-	return &LineqSolution{
+func makeSolution(iterCount int, minError float64, solution *vec.Vector) *Solution {
+	return &Solution{
 		ReachedMaxIter: false,
 		MinError:       minError,
 		IterCount:      iterCount,
@@ -27,8 +27,8 @@ func makeSolution(iterCount int, minError float64, solution *vec.Vector) *LineqS
 	}
 }
 
-func makeErrorSolution(iterCount int, minError float64, partialSolution *vec.Vector) *LineqSolution {
-	return &LineqSolution{
+func makeErrorSolution(iterCount int, minError float64, partialSolution *vec.Vector) *Solution {
+	return &Solution{
 		ReachedMaxIter: true,
 		MinError:       minError,
 		IterCount:      iterCount,
@@ -37,7 +37,7 @@ func makeErrorSolution(iterCount int, minError float64, partialSolution *vec.Vec
 }
 
 /* ::::::::::::::: Methods ::::::::::::::: */
-func (sol LineqSolution) String() string {
+func (sol Solution) String() string {
 	if sol.ReachedMaxIter {
 		return fmt.Sprintf(
 			"[KO] -> Min Error: %f, Iter Count: %d",

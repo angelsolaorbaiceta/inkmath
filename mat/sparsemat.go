@@ -15,9 +15,24 @@ type SparseMat struct {
 
 /* ::::::::::::::: Construction ::::::::::::::: */
 
-// MakeSparse creates a new sparse matrix with the indicated number of rows and columns.
+/*
+MakeSparse creates a new sparse matrix with the indicated number of rows and columns.
+*/
 func MakeSparse(rows, cols int) *SparseMat {
 	return &SparseMat{rows, cols, make(map[int]map[int]float64)}
+}
+
+/*
+MakeIdentity creates a new sparse matrix with all zeroes except in the main diagonal,
+which has ones.
+*/
+func MakeIdentity(size int) *SparseMat {
+	identity := MakeSparse(size, size)
+	for i := 0; i < size; i++ {
+		identity.SetValue(i, i, 1.0)
+	}
+
+	return identity
 }
 
 /* ::::::::::::::: Properties ::::::::::::::: */
@@ -179,4 +194,25 @@ func (m SparseMat) TimesMatrix(other Matrixable) Matrixable {
 	}
 
 	return result
+}
+
+/*
+RowTimesVector returns the result of multiplying the row at the given index
+times the given vector.
+*/
+func (m SparseMat) RowTimesVector(row int, v *vec.Vector) float64 {
+	if m.Cols() != v.Length() {
+		panic("Can't multiply matrix row with vector due to size mismatch")
+	}
+
+	if rowData, hasRow := m.data[row]; hasRow {
+		result := 0.0
+		for i, val := range rowData {
+			result += v.Value(i) * val
+		}
+
+		return result
+	}
+
+	return 0.0
 }
