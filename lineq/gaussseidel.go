@@ -71,7 +71,7 @@ func (solver GaussSeidelSolver) Solve(m mat.Matrixable, v *vec.Vector) *Solution
 
 	for iter = 0; iter < solver.MaxIter; iter++ {
 		if solutionGoodEnough() {
-			return makeSolution(iter, solutionError, solution)
+			return makeSolution(iter, solver.MaxError, solution)
 		}
 
 		improveSolution()
