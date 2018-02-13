@@ -8,6 +8,7 @@ import (
 	"os"
 
 	"github.com/angelsolaorbaiceta/inkmath"
+	"github.com/angelsolaorbaiceta/inkmath/vec"
 )
 
 /*
@@ -93,6 +94,22 @@ func HasZeroInMainDiagonal(m Matrixable) bool {
 	}
 
 	return false
+}
+
+/*
+MainDiagonal returns a vector containing the values of the main diagonal.
+*/
+func MainDiagonal(m Matrixable) *vec.Vector {
+	if !IsSquare(m) {
+		panic("Matrix main diagonal only applies to square matrices")
+	}
+
+	diag := vec.Make(m.Rows())
+	for i := 0; i < m.Rows(); i++ {
+		diag.SetValue(i, m.Value(i, i))
+	}
+
+	return diag
 }
 
 /* ::::::::::::::: Image ::::::::::::::: */

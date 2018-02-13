@@ -21,6 +21,8 @@ type Matrixable interface {
 	SetZeroCol(int)
 	SetIdentityRow(int)
 
+	NonZeroIndicesAtRow(int) []int
+
 	/* Operations */
 	AddInPlace(other Matrixable) error
 	TimesInPlace(other Matrixable) error

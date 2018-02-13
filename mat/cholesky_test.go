@@ -1,7 +1,6 @@
 package mat
 
 import (
-	"fmt"
 	"testing"
 )
 
@@ -17,7 +16,6 @@ func TestCholeskyDecomposition(t *testing.T) {
 func TestIncompleteCholeskyDecomposition(t *testing.T) {
 	m, expectedDecomposition := makeCholeskyMatrix(), makeCholeskyDecomposition()
 	cholesky := IncompleteCholeskyDecomposition(m)
-	fmt.Println(cholesky)
 
 	if !AreEqual(cholesky, expectedDecomposition) {
 		t.Error("Wrong Cholesky factorization")
@@ -25,7 +23,7 @@ func TestIncompleteCholeskyDecomposition(t *testing.T) {
 }
 
 func makeCholeskyMatrix() Matrixable {
-	m := MakeSquareDense(4)
+	m := MakeSparse(4, 4)
 
 	m.SetValue(0, 0, 4.0)
 	m.SetValue(0, 1, -2.0)

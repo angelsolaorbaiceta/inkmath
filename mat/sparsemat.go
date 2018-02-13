@@ -91,6 +91,27 @@ func (m *SparseMat) AddToValue(row, col int, value float64) {
 	}
 }
 
+/*
+NonZeroIndicesAtRow returns a slice with all non-zero elements indices for the given row.
+*/
+func (m SparseMat) NonZeroIndicesAtRow(row int) []int {
+	if dataRow, hasRow := m.data[row]; hasRow {
+		var (
+			keys = make([]int, len(m.data[row]))
+			i    = 0
+		)
+
+		for k := range dataRow {
+			keys[i] = k
+			i++
+		}
+
+		return keys
+	}
+
+	return []int{}
+}
+
 /* ::::::::::::::: Operations ::::::::::::::: */
 
 /*

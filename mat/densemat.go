@@ -3,6 +3,7 @@ package mat
 import (
 	"errors"
 
+	"github.com/angelsolaorbaiceta/inkmath"
 	"github.com/angelsolaorbaiceta/inkmath/vec"
 )
 
@@ -75,6 +76,20 @@ func (m *DenseMat) SetIdentityRow(row int) {
 		m.data[row][col] = 0.0
 	}
 	m.data[row][row] = 1.0
+}
+
+/*
+NonZeroIndicesAtRow returns a slice with all non-zero elements indices for the given row.
+*/
+func (m DenseMat) NonZeroIndicesAtRow(row int) []int {
+	indices := make([]int, 0)
+	for i, val := range m.data[row] {
+		if !inkmath.IsCloseToZero(val) {
+			indices = append(indices, i)
+		}
+	}
+
+	return indices
 }
 
 /* ::::::::::::::: Operations ::::::::::::::: */
