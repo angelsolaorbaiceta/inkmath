@@ -19,8 +19,8 @@ func TestCGSolveSystem2x2(t *testing.T) {
 
 func TestPreconditionedWithIdentityCGSolveSystem2x2(t *testing.T) {
 	m, v := makeSystem2x2()
-	precond := mat.MakeIdentity(2)
-	solver := PreconditionedConjugateGradientSolver{precond, 1e-10, 2}
+	// precond := mat.MakeIdentity(2)
+	solver := PreconditionedConjugateGradientSolver{1e-10, 2}
 
 	if sol := solver.Solve(m, v); !sol.Solution.Equals(expectedSol2x2) {
 		t.Errorf("Wrong solution, Expected %v, but got %v", expectedSol2x2, sol)

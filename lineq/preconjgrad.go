@@ -14,9 +14,8 @@ resolution where a preconditioner is used to speed up convergence.
 The preconditioner should be a square matrix.
 */
 type PreconditionedConjugateGradientSolver struct {
-	Preconditioner mat.Matrixable
-	MaxError       float64
-	MaxIter        int
+	MaxError float64
+	MaxIter  int
 }
 
 /* ::::::::::::::: Methods : Solver ::::::::::::::: */
@@ -27,13 +26,11 @@ CanSolve returns whether Conjugate Gradient is suitable for solving the given sy
 The conditions required are:
     - System matrix is square
 	- System matrix is symmetric
-    - System matrix has same size as preconditioner
     - System matrix and vector have same size
 */
 func (solver PreconditionedConjugateGradientSolver) CanSolve(m mat.Matrixable, v *vec.Vector) bool {
 	return mat.IsSquare(m) &&
 		m.Rows() == v.Length() &&
-		m.Rows() == solver.Preconditioner.Rows() &&
 		mat.IsSymmetric(m)
 }
 
@@ -45,6 +42,7 @@ func (solver PreconditionedConjugateGradientSolver) Solve(a mat.Matrixable, b *v
 	var (
 		size             = b.Length()
 		x                = vec.Make(size)
+		precond          = computePreconditioner(a)
 		r, oldr, p       *vec.Vector
 		alpha, beta, err float64
 		iter             int
@@ -62,7 +60,7 @@ func (solver PreconditionedConjugateGradientSolver) Solve(a mat.Matrixable, b *v
 
 	// Initial values
 	r = b.Minus(a.TimesVector(x))
-	p = r.Clone()
+	p = precond.TimesVector(r)
 
 	// Iteration loop
 	for iter = 0; iter < solver.MaxIter; iter++ {
@@ -70,13 +68,23 @@ func (solver PreconditionedConjugateGradientSolver) Solve(a mat.Matrixable, b *v
 			return makeSolution(iter, solver.MaxError, x)
 		}
 
-		alpha = r.Times(r) / p.Times(a.TimesVector(p))
+		alpha = r.Times(precond.TimesVector(r)) / (p.Times(a.TimesVector(p))) // r.Times(r) / p.Times(a.TimesVector(p))
 		x = x.Plus(p.Scaled(alpha))
 		oldr = r.Clone()
-		r = r.Minus(a.TimesVector(p).Scaled(alpha))
-		beta = r.Times(r) / oldr.Times(oldr)
-		p = r.Plus(p.Scaled(beta))
+		r = oldr.Minus(a.TimesVector(p).Scaled(alpha))
+		beta = r.Times(precond.TimesVector(r)) / oldr.Times(precond.TimesVector(oldr))
+		p = precond.TimesVector(r).Plus(p.Scaled(beta))
 	}
 
 	return makeErrorSolution(iter, err, x)
+}
+
+func computePreconditioner(m mat.Matrixable) mat.Matrixable {
+	precond := mat.MakeSparse(m.Rows(), m.Cols())
+	for i := 0; i < m.Rows(); i++ {
+		// precond.SetValue(i, i, 1.0/math.Sqrt(m.Value(i, i)))
+		precond.SetValue(i, i, 1.0/m.Value(i, i))
+	}
+
+	return precond
 }
