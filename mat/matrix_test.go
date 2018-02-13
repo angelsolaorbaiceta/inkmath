@@ -9,6 +9,44 @@ import (
 
 /* <--------------- Dense ---------------> */
 
+func TestAddToValueDense(t *testing.T) {
+	m := MakeDense(2, 2)
+	m.AddToValue(0, 1, 5.0)
+	m.AddToValue(0, 1, 6.0)
+
+	if m.Value(0, 1) != 11.0 {
+		t.Error("Value not as expected")
+	}
+}
+
+func TestSetZeroColDense(t *testing.T) {
+	m := MakeDense(3, 3)
+	m.SetValue(0, 1, 1.0)
+	m.SetValue(1, 1, 2.0)
+	m.SetValue(2, 1, 3.0)
+	m.SetZeroCol(1)
+
+	if !inkmath.IsCloseToZero(m.Value(0, 1)) ||
+		!inkmath.IsCloseToZero(m.Value(1, 1)) ||
+		!inkmath.IsCloseToZero(m.Value(2, 1)) {
+		t.Error("Column expected to be zero")
+	}
+}
+
+func TestSetIdentityRowDense(t *testing.T) {
+	m := MakeDense(3, 3)
+	m.SetValue(1, 0, 4.0)
+	m.SetValue(1, 1, 4.0)
+	m.SetValue(1, 2, 4.0)
+	m.SetIdentityRow(1)
+
+	if !inkmath.IsCloseToZero(m.Value(1, 0)) ||
+		!inkmath.FuzzyEqual(m.Value(1, 1), 1.0) ||
+		!inkmath.IsCloseToZero(m.Value(1, 2)) {
+		t.Error("Row expected to be identity")
+	}
+}
+
 func TestAddDenseMatricesInPlace(t *testing.T) {
 	matA, matB := makeDenseTestMatrices()
 	matA.AddInPlace(matB)
@@ -45,10 +83,23 @@ func TestDenseSquareMatrixTimesVector(t *testing.T) {
 	}
 }
 
+func TestNonZeroIndicesInRowDense(t *testing.T) {
+	m := MakeDense(3, 3)
+	m.SetValue(1, 1, 4.0)
+	indices := m.NonZeroIndicesAtRow(1)
+
+	if len(indices) != 1 {
+		t.Error("Non zero indices expected to have only one index")
+	}
+	if indices[0] != 1 {
+		t.Error("Non zero index expected to be 1")
+	}
+}
+
 /* <--------------- Sparse ---------------> */
 
 /* Set & Get Values */
-func TestSetNonZeroValue(t *testing.T) {
+func TestSetNonZeroValueSparse(t *testing.T) {
 	m := MakeSparse(5, 5)
 	m.SetValue(1, 2, 7.5)
 
@@ -57,7 +108,7 @@ func TestSetNonZeroValue(t *testing.T) {
 	}
 }
 
-func TestSetZeroValueRemovesValue(t *testing.T) {
+func TestSetZeroValueRemovesValueSparse(t *testing.T) {
 	m := MakeSparse(5, 5)
 	m.SetValue(1, 2, 7.5)
 	m.SetValue(1, 2, 0.0)
@@ -67,14 +118,24 @@ func TestSetZeroValueRemovesValue(t *testing.T) {
 	}
 }
 
-func TestNonAssignedValueIsZero(t *testing.T) {
+func TestNonAssignedValueIsZeroSparse(t *testing.T) {
 	m := MakeSparse(2, 4)
 	if val := m.Value(1, 3); val != 0 {
 		t.Errorf("Value not as expected. Got %f", val)
 	}
 }
 
-func TestSetZeroCol(t *testing.T) {
+func TestAddToValueSparse(t *testing.T) {
+	m := MakeSparse(2, 2)
+	m.AddToValue(0, 1, 5.0)
+	m.AddToValue(0, 1, 6.0)
+
+	if m.Value(0, 1) != 11.0 {
+		t.Error("Value not as expected")
+	}
+}
+
+func TestSetZeroColSparse(t *testing.T) {
 	m := MakeSparse(3, 3)
 	m.SetValue(0, 1, 1.0)
 	m.SetValue(1, 1, 2.0)
@@ -88,7 +149,7 @@ func TestSetZeroCol(t *testing.T) {
 	}
 }
 
-func TestSetIdentityRow(t *testing.T) {
+func TestSetIdentityRowSparse(t *testing.T) {
 	m := MakeSparse(3, 3)
 	m.SetValue(1, 0, 4.0)
 	m.SetValue(1, 1, 4.0)
@@ -102,7 +163,21 @@ func TestSetIdentityRow(t *testing.T) {
 	}
 }
 
+func TestNonZeroIndicesInRowSparse(t *testing.T) {
+	m := MakeSparse(3, 3)
+	m.SetValue(1, 1, 4.0)
+	indices := m.NonZeroIndicesAtRow(1)
+
+	if len(indices) != 1 {
+		t.Error("Non zero indices expected to have only one index")
+	}
+	if indices[0] != 1 {
+		t.Error("Non zero index expected to be 1")
+	}
+}
+
 /* Operations */
+
 func TestSparseMatrixTimesVector(t *testing.T) {
 	mat := MakeSparse(2, 2)
 	mat.SetValue(0, 0, 1.0)
