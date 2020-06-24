@@ -3,7 +3,7 @@ package mat
 import (
 	"testing"
 
-	"github.com/angelsolaorbaiceta/inkmath"
+	"github.com/angelsolaorbaiceta/inkmath/nums"
 	"github.com/angelsolaorbaiceta/inkmath/vec"
 )
 
@@ -26,9 +26,9 @@ func TestDenseMatrixSetZeroCol(t *testing.T) {
 	m.SetValue(2, 1, 3.0)
 	m.SetZeroCol(1)
 
-	if !inkmath.IsCloseToZero(m.Value(0, 1)) ||
-		!inkmath.IsCloseToZero(m.Value(1, 1)) ||
-		!inkmath.IsCloseToZero(m.Value(2, 1)) {
+	if !nums.IsCloseToZero(m.Value(0, 1)) ||
+		!nums.IsCloseToZero(m.Value(1, 1)) ||
+		!nums.IsCloseToZero(m.Value(2, 1)) {
 		t.Error("Column expected to be zero")
 	}
 }
@@ -40,9 +40,9 @@ func TestDenseMatrixSetIdentityRow(t *testing.T) {
 	m.SetValue(1, 2, 4.0)
 	m.SetIdentityRow(1)
 
-	if !inkmath.IsCloseToZero(m.Value(1, 0)) ||
-		!inkmath.FuzzyEqual(m.Value(1, 1), 1.0) ||
-		!inkmath.IsCloseToZero(m.Value(1, 2)) {
+	if !nums.IsCloseToZero(m.Value(1, 0)) ||
+		!nums.FuzzyEqual(m.Value(1, 1), 1.0) ||
+		!nums.IsCloseToZero(m.Value(1, 2)) {
 		t.Error("Row expected to be identity")
 	}
 }
@@ -142,9 +142,9 @@ func TestSparseMatrixSetZeroCol(t *testing.T) {
 	m.SetValue(2, 1, 3.0)
 	m.SetZeroCol(1)
 
-	if !inkmath.IsCloseToZero(m.Value(0, 1)) ||
-		!inkmath.IsCloseToZero(m.Value(1, 1)) ||
-		!inkmath.IsCloseToZero(m.Value(2, 1)) {
+	if !nums.IsCloseToZero(m.Value(0, 1)) ||
+		!nums.IsCloseToZero(m.Value(1, 1)) ||
+		!nums.IsCloseToZero(m.Value(2, 1)) {
 		t.Error("Column expected to be zero")
 	}
 }
@@ -156,9 +156,9 @@ func TestSparseMatrixSetIdentityRow(t *testing.T) {
 	m.SetValue(1, 2, 4.0)
 	m.SetIdentityRow(1)
 
-	if !inkmath.IsCloseToZero(m.Value(1, 0)) ||
-		!inkmath.FuzzyEqual(m.Value(1, 1), 1.0) ||
-		!inkmath.IsCloseToZero(m.Value(1, 2)) {
+	if !nums.IsCloseToZero(m.Value(1, 0)) ||
+		!nums.FuzzyEqual(m.Value(1, 1), 1.0) ||
+		!nums.IsCloseToZero(m.Value(1, 2)) {
 		t.Error("Row expected to be identity")
 	}
 }

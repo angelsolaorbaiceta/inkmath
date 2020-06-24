@@ -3,8 +3,6 @@ package vec
 import (
 	"math"
 	"testing"
-
-	"github.com/angelsolaorbaiceta/inkmath"
 )
 
 /* <--------------- Properties ---------------> */
@@ -12,7 +10,7 @@ func TestNorm(t *testing.T) {
 	v := MakeWithValues([]float64{1, 2, 3})
 	expectedNorm := math.Sqrt(14.0)
 
-	if norm := v.Norm(); !inkmath.FuzzyEqual(norm, expectedNorm) {
+	if norm := v.Norm(); !nums.FuzzyEqual(norm, expectedNorm) {
 		t.Errorf("Wront Vector norm. Expected %f, but got %f", expectedNorm, norm)
 	}
 }
@@ -56,7 +54,7 @@ func TestMultiply(t *testing.T) {
 	prod := u.Times(v)
 	expectedProd := 11.0
 
-	if !inkmath.FuzzyEqual(prod, expectedProd) {
+	if !nums.FuzzyEqual(prod, expectedProd) {
 		t.Errorf("Wrong vector prod. Expected %f, but got %f", expectedProd, prod)
 	}
 }

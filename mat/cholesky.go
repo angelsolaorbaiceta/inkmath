@@ -3,7 +3,7 @@ package mat
 import (
 	"math"
 
-	"github.com/angelsolaorbaiceta/inkmath"
+	"github.com/angelsolaorbaiceta/inkmath/nums"
 )
 
 /*
@@ -62,7 +62,7 @@ func IncompleteCholeskyDecomposition(m Matrixable) Matrixable {
 			if i == j {
 				lowerMatrix.SetValue(i, i, math.Sqrt(m.Value(i, i)-sqSum))
 			} else {
-				if !inkmath.IsCloseToZero(m.Value(i, j)) {
+				if !nums.IsCloseToZero(m.Value(i, j)) {
 					sum = 0.0
 					for k := 0; k < j; k++ {
 						sum += lowerMatrix.Value(i, k) * lowerMatrix.Value(j, k)

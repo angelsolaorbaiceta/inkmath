@@ -3,7 +3,7 @@ package mat
 import (
 	"errors"
 
-	"github.com/angelsolaorbaiceta/inkmath"
+	"github.com/angelsolaorbaiceta/inkmath/nums"
 	"github.com/angelsolaorbaiceta/inkmath/vec"
 )
 
@@ -84,7 +84,7 @@ NonZeroIndicesAtRow returns a slice with all non-zero elements indices for the g
 func (m DenseMat) NonZeroIndicesAtRow(row int) []int {
 	indices := make([]int, 0)
 	for i, val := range m.data[row] {
-		if !inkmath.IsCloseToZero(val) {
+		if !nums.IsCloseToZero(val) {
 			indices = append(indices, i)
 		}
 	}

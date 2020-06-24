@@ -1,7 +1,7 @@
 package mat
 
 import (
-	"github.com/angelsolaorbaiceta/inkmath"
+	"github.com/angelsolaorbaiceta/inkmath/nums"
 	"github.com/angelsolaorbaiceta/inkmath/vec"
 )
 
@@ -77,7 +77,7 @@ func (m SparseMat) Value(row, col int) float64 {
 
 // SetValue sets a value for a given row and column.
 func (m *SparseMat) SetValue(row, col int, value float64) {
-	if inkmath.IsCloseToZero(value) {
+	if nums.IsCloseToZero(value) {
 		m.removeValueAt(row, col)
 	} else {
 		m.setValueToAdd(row, col, value)

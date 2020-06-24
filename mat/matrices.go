@@ -7,7 +7,7 @@ import (
 	"math"
 	"os"
 
-	"github.com/angelsolaorbaiceta/inkmath"
+	"github.com/angelsolaorbaiceta/inkmath/nums"
 	"github.com/angelsolaorbaiceta/inkmath/vec"
 )
 
@@ -22,7 +22,7 @@ func AreEqual(m1, m2 Matrixable) bool {
 
 	for i := 0; i < m1.Rows(); i++ {
 		for j := 0; j < m1.Cols(); j++ {
-			if !inkmath.FuzzyEqual(m1.Value(i, j), m2.Value(i, j)) {
+			if !nums.FuzzyEqual(m1.Value(i, j), m2.Value(i, j)) {
 				return false
 			}
 		}
@@ -48,7 +48,7 @@ func IsSymmetric(m Matrixable) bool {
 
 	for i := 0; i < m.Rows(); i++ {
 		for j := i + 1; j < m.Cols(); j++ {
-			if !inkmath.FuzzyEqual(m.Value(i, j), m.Value(j, i)) {
+			if !nums.FuzzyEqual(m.Value(i, j), m.Value(j, i)) {
 				return false
 			}
 		}
@@ -88,7 +88,7 @@ func HasZeroInMainDiagonal(m Matrixable) bool {
 	}
 
 	for i := 0; i < m.Rows(); i++ {
-		if inkmath.IsCloseToZero(m.Value(i, i)) {
+		if nums.IsCloseToZero(m.Value(i, i)) {
 			return true
 		}
 	}
@@ -135,7 +135,7 @@ func ToImage(m Matrixable, filePath string) {
 	for row := 0; row < height; row++ {
 		for col := 0; col < width; col++ {
 			val = m.Value(row, col)
-			if inkmath.IsCloseToZero(val) {
+			if nums.IsCloseToZero(val) {
 				img.Set(row, col, zeroColor)
 			} else if val > 0.0 {
 				img.Set(row, col, posColor)

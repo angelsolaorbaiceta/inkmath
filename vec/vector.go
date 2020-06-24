@@ -3,7 +3,7 @@ package vec
 import (
 	"math"
 
-	"github.com/angelsolaorbaiceta/inkmath"
+	"github.com/angelsolaorbaiceta/inkmath/nums"
 )
 
 // Vector is an array of values.
@@ -70,7 +70,7 @@ func (v Vector) Equals(other *Vector) bool {
 	}
 
 	for i := 0; i < v.length; i++ {
-		if !inkmath.FuzzyEqual(v.data[i], other.data[i]) {
+		if !nums.FuzzyEqual(v.data[i], other.data[i]) {
 			return false
 		}
 	}
