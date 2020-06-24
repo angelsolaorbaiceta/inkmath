@@ -6,9 +6,9 @@ import (
 )
 
 /*
-Solver is a linear equation system solver.
+A Solver is a solver for linear systems of equations.
 */
 type Solver interface {
-	CanSolve(m mat.Matrixable, v *vec.Vector) bool
-	Solve(m mat.Matrixable, v *vec.Vector) *Solution
+	CanSolve(m mat.ReadOnlyMatrix, v *vec.Vector) bool
+	Solve(m mat.ReadOnlyMatrix, v *vec.Vector) *Solution
 }

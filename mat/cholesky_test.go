@@ -22,7 +22,7 @@ func TestIncompleteCholeskyDecomposition(t *testing.T) {
 	}
 }
 
-func makeCholeskyMatrix() Matrixable {
+func makeCholeskyMatrix() ReadOnlyMatrix {
 	m := MakeSparse(4, 4)
 
 	m.SetValue(0, 0, 4.0)
@@ -48,7 +48,7 @@ func makeCholeskyMatrix() Matrixable {
 	return m
 }
 
-func makeCholeskyDecomposition() Matrixable {
+func makeCholeskyDecomposition() ReadOnlyMatrix {
 	m := MakeSquareDense(4)
 
 	m.SetValue(0, 0, 2.0)

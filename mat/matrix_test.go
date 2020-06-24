@@ -245,7 +245,7 @@ func makeSparseTestMatrices() (*SparseMat, *SparseMat) {
 	return matA, matB
 }
 
-func assertMatrixMultiplication(result Matrixable, t *testing.T) {
+func assertMatrixMultiplication(result ReadOnlyMatrix, t *testing.T) {
 	if val := result.Value(0, 0); val != 2.0 {
 		t.Errorf("Wrong multiplication. Expected 2.0, got %f", val)
 	}
@@ -260,7 +260,7 @@ func assertMatrixMultiplication(result Matrixable, t *testing.T) {
 	}
 }
 
-func assertMatrixAddition(result Matrixable, t *testing.T) {
+func assertMatrixAddition(result ReadOnlyMatrix, t *testing.T) {
 	if val := result.Value(0, 0); val != 3.0 {
 		t.Errorf("Wrong addition. Expected 3.0, got %f", val)
 	}

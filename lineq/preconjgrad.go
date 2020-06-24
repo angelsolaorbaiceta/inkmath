@@ -21,24 +21,31 @@ type PreconditionedConjugateGradientSolver struct {
 /* ::::::::::::::: Methods : Solver ::::::::::::::: */
 
 /*
-CanSolve returns whether Conjugate Gradient is suitable for solving the given system of equations.
+CanSolve returns whether Conjugate Gradient is suitable for solving the given
+system of equations.
 
 The conditions required are:
     - System matrix is square
 		- System matrix is symmetric
     - System matrix and vector have same size
 */
-func (solver PreconditionedConjugateGradientSolver) CanSolve(m mat.Matrixable, v *vec.Vector) bool {
+func (solver PreconditionedConjugateGradientSolver) CanSolve(
+	m mat.ReadOnlyMatrix,
+	v *vec.Vector,
+) bool {
 	return mat.IsSquare(m) &&
 		m.Rows() == v.Length() &&
 		mat.IsSymmetric(m)
 }
 
 /*
-Solve solves the system of equations iteratively until a sufficiently good solution is found
-or the maximum number of iterations reached.
+Solve solves the system of equations iteratively until a sufficiently good
+solution is found or the maximum number of iterations reached.
 */
-func (solver PreconditionedConjugateGradientSolver) Solve(a mat.Matrixable, b *vec.Vector) *Solution {
+func (solver PreconditionedConjugateGradientSolver) Solve(
+	a mat.ReadOnlyMatrix,
+	b *vec.Vector,
+) *Solution {
 	var (
 		size                      = b.Length()
 		x                         = vec.Make(size)
@@ -80,10 +87,9 @@ func (solver PreconditionedConjugateGradientSolver) Solve(a mat.Matrixable, b *v
 	return makeErrorSolution(iter, err, x)
 }
 
-func computePreconditioner(m mat.Matrixable) mat.Matrixable {
+func computePreconditioner(m mat.ReadOnlyMatrix) mat.ReadOnlyMatrix {
 	precond := mat.MakeSparse(m.Rows(), m.Cols())
 	for i := 0; i < m.Rows(); i++ {
-		// precond.SetValue(i, i, 1.0/math.Sqrt(m.Value(i, i)))
 		precond.SetValue(i, i, 1.0/m.Value(i, i))
 	}
 

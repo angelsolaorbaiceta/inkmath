@@ -25,15 +25,15 @@ The conditions required are:
     - System matrix and vector have same size
 	- System matrix has no zeroes in main diagonal
 */
-func (solver GaussSeidelSolver) CanSolve(m mat.Matrixable, v *vec.Vector) bool {
+func (solver GaussSeidelSolver) CanSolve(m mat.ReadOnlyMatrix, v *vec.Vector) bool {
 	return mat.IsSquare(m) && m.Rows() == v.Length() && !mat.HasZeroInMainDiagonal(m)
 }
 
 /*
-Solve solves the system of equations iteratively until a sufficiently good solution is found
-or the maximum number of iterations reached.
+Solve solves the system of equations iteratively until a sufficiently good
+solution is found or the maximum number of iterations reached.
 */
-func (solver GaussSeidelSolver) Solve(m mat.Matrixable, v *vec.Vector) *Solution {
+func (solver GaussSeidelSolver) Solve(m mat.ReadOnlyMatrix, v *vec.Vector) *Solution {
 	var (
 		size          = v.Length()
 		solution      = vec.Make(size)

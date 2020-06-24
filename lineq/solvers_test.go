@@ -48,7 +48,7 @@ func TestGaussSeidelSolveSystem2x2(t *testing.T) {
 /* <--------------- Helpers ---------------> */
 var expectedSol2x2 = vec.MakeWithValues([]float64{1.0 / 11.0, 7.0 / 11.0})
 
-func makeSystem2x2() (mat.Matrixable, *vec.Vector) {
+func makeSystem2x2() (mat.MutableMatrix, *vec.Vector) {
 	m := mat.MakeSquareDense(2)
 	m.SetValue(0, 0, 4.0)
 	m.SetValue(0, 1, 1.0)

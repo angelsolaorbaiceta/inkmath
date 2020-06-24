@@ -1,21 +1,17 @@
 package mat
 
 import (
-	"image"
-	"image/color"
-	"image/png"
 	"math"
-	"os"
 
 	"github.com/angelsolaorbaiceta/inkmath/nums"
 	"github.com/angelsolaorbaiceta/inkmath/vec"
 )
 
 /*
-AreEqual returns true iff matrices have same rows and columns with exactly
-the same values in matching positions.
+AreEqual returns true iff matrices have the same number of rows and columns with
+exactly the same values in matching positions.
 */
-func AreEqual(m1, m2 Matrixable) bool {
+func AreEqual(m1, m2 ReadOnlyMatrix) bool {
 	if m1.Rows() != m2.Rows() || m1.Cols() != m2.Cols() {
 		return false
 	}
@@ -32,16 +28,18 @@ func AreEqual(m1, m2 Matrixable) bool {
 }
 
 /*
-IsSquare returns true if the given matrix has the same number of rows and columns.
+IsSquare returns true if the given matrix has the same number of rows and
+columns.
 */
-func IsSquare(m Matrixable) bool {
+func IsSquare(m ReadOnlyMatrix) bool {
 	return m.Rows() == m.Cols()
 }
 
 /*
-IsSymmetric returns true if the given matrix is square and equals to it's traspose.
+IsSymmetric returns true if the given matrix is square and equals to it's
+traspose.
 */
-func IsSymmetric(m Matrixable) bool {
+func IsSymmetric(m ReadOnlyMatrix) bool {
 	if !IsSquare(m) {
 		panic("Matrix symmetry only applies to square matrices")
 	}
@@ -58,10 +56,10 @@ func IsSymmetric(m Matrixable) bool {
 }
 
 /*
-IsRowDominant returns true if for every row in the matrix, the element in the main diagonal
-is greater than every other element.
+IsRowDominant returns true if for every row in the matrix, the element in the
+main diagonal is greater than every other element.
 */
-func IsRowDominant(m Matrixable) bool {
+func IsRowDominant(m ReadOnlyMatrix) bool {
 	if !IsSquare(m) {
 		panic("Matrix dominancy only applies to square matrices")
 	}
@@ -82,7 +80,7 @@ func IsRowDominant(m Matrixable) bool {
 /*
 HasZeroInMainDiagonal returns true if a zero is found in the matrix main diagonal.
 */
-func HasZeroInMainDiagonal(m Matrixable) bool {
+func HasZeroInMainDiagonal(m ReadOnlyMatrix) bool {
 	if !IsSquare(m) {
 		panic("Matrix main diagonal only applies to square matrices")
 	}
@@ -99,7 +97,7 @@ func HasZeroInMainDiagonal(m Matrixable) bool {
 /*
 MainDiagonal returns a vector containing the values of the main diagonal.
 */
-func MainDiagonal(m Matrixable) *vec.Vector {
+func MainDiagonal(m ReadOnlyMatrix) *vec.Vector {
 	if !IsSquare(m) {
 		panic("Matrix main diagonal only applies to square matrices")
 	}
@@ -110,42 +108,4 @@ func MainDiagonal(m Matrixable) *vec.Vector {
 	}
 
 	return diag
-}
-
-/* ::::::::::::::: Image ::::::::::::::: */
-
-/*
-ToImage creates an image with as many width pixels as columns has the matrix and
-as many height pixels as rows. Each pixel will be coloured:
-	- Gray if matrix value is zero
-	- Red if matrix value is positive
-	- Blue if matrix value is negative
-*/
-func ToImage(m Matrixable, filePath string) {
-	var (
-		width     = m.Cols()
-		height    = m.Rows()
-		img       = image.NewRGBA(image.Rectangle{image.Point{0, 0}, image.Point{width, height}})
-		zeroColor = color.RGBA{230, 230, 230, 255}
-		posColor  = color.RGBA{255, 0, 0, 255}
-		negColor  = color.RGBA{0, 0, 255, 255}
-		val       float64
-	)
-
-	for row := 0; row < height; row++ {
-		for col := 0; col < width; col++ {
-			val = m.Value(row, col)
-			if nums.IsCloseToZero(val) {
-				img.Set(row, col, zeroColor)
-			} else if val > 0.0 {
-				img.Set(row, col, posColor)
-			} else {
-				img.Set(row, col, negColor)
-			}
-		}
-	}
-
-	f, _ := os.OpenFile(filePath+"_sysmat.png", os.O_WRONLY|os.O_CREATE, 0600)
-	defer f.Close()
-	png.Encode(f, img)
 }

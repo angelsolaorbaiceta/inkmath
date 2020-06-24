@@ -8,7 +8,10 @@ import (
 )
 
 /*
-DenseMat is an implementation of a dense Matrixable.
+A DenseMat is an implementation of a dense Matrix.
+
+Dense matrices allocate all the memory required to store every value.
+Every value which hasn't been explecitly set is zero.
 */
 type DenseMat struct {
 	rows, cols int
@@ -23,6 +26,7 @@ func MakeSquareDense(size int) *DenseMat {
 	for i := 0; i < size; i++ {
 		data[i] = make([]float64, size)
 	}
+
 	return &DenseMat{size, size, data}
 }
 
@@ -32,6 +36,7 @@ func MakeDense(rows, cols int) *DenseMat {
 	for i := 0; i < rows; i++ {
 		data[i] = make([]float64, cols)
 	}
+
 	return &DenseMat{rows, cols, data}
 }
 
@@ -95,10 +100,10 @@ func (m DenseMat) NonZeroIndicesAtRow(row int) []int {
 /* ::::::::::::::: Operations ::::::::::::::: */
 
 /*
-AddInPlace adds this matrix with other and sets the aresult in this matrix.
+AddInPlace adds this matrix with other and sets the result in this matrix.
 As this is a square matrix, it is required that the other matrix is square as well.
 */
-func (m *DenseMat) AddInPlace(other Matrixable) error {
+func (m *DenseMat) AddInPlace(other ReadOnlyMatrix) error {
 	if m.Rows() != other.Rows() || m.Cols() != other.Cols() {
 		return errors.New("Can't add matrices due to size mismatch")
 	}
@@ -116,7 +121,7 @@ func (m *DenseMat) AddInPlace(other Matrixable) error {
 TimesInPlace multiplies this matrix times other and sets the result in this matrix.
 As this is a square matrix, it is required that the other matrix is square as well.
 */
-func (m *DenseMat) TimesInPlace(other Matrixable) error {
+func (m *DenseMat) TimesInPlace(other ReadOnlyMatrix) error {
 	if m.Rows() != other.Rows() || m.Cols() != other.Cols() {
 		return errors.New("Can't multiply matrices due to size mismatch")
 	}
@@ -172,7 +177,7 @@ func (m DenseMat) TimesVector(v *vec.Vector) *vec.Vector {
 /*
 TimesMatrix multiplies this matrix with other.
 */
-func (m DenseMat) TimesMatrix(other Matrixable) Matrixable {
+func (m DenseMat) TimesMatrix(other ReadOnlyMatrix) ReadOnlyMatrix {
 	if m.Cols() != other.Rows() {
 		panic("Can't multiply matrices due to size mismatch")
 	}

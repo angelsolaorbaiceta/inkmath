@@ -18,22 +18,23 @@ type JacobiSolver struct {
 /* ::::::::::::::: Methods : Solver ::::::::::::::: */
 
 /*
-CanSolve returns whether Jacobi is suitable for solving the given system of equations.
+CanSolve returns whether Jacobi is suitable for solving the given system of
+equations.
 
 The conditions required are:
     - System matrix is square
     - System matrix and vector have same size
 	- System matrix has no zeroes in main diagonal
 */
-func (solver JacobiSolver) CanSolve(m mat.Matrixable, v *vec.Vector) bool {
+func (solver JacobiSolver) CanSolve(m mat.ReadOnlyMatrix, v *vec.Vector) bool {
 	return mat.IsSquare(m) && m.Rows() == v.Length() && !mat.HasZeroInMainDiagonal(m)
 }
 
 /*
-Solve solves the system of equations iteratively until a sufficiently good solution is found
-or the maximum number of iterations reached.
+Solve solves the system of equations iteratively until a sufficiently good
+solution is found or the maximum number of iterations reached.
 */
-func (solver JacobiSolver) Solve(m mat.Matrixable, v *vec.Vector) *Solution {
+func (solver JacobiSolver) Solve(m mat.ReadOnlyMatrix, v *vec.Vector) *Solution {
 	var (
 		size          = v.Length()
 		solution      = vec.Make(size)

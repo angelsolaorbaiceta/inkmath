@@ -10,7 +10,8 @@ import (
 CholeskyDecomposition computes the Cholesky lower matrix decomposition
 for the given square and symmetric matrix.
 */
-func CholeskyDecomposition(m Matrixable) Matrixable {
+// TODO: should return pointer
+func CholeskyDecomposition(m ReadOnlyMatrix) ReadOnlyMatrix {
 	if !IsSquare(m) {
 		panic("Cannot use Cholesky factorization in non-square matrices")
 	}
@@ -42,10 +43,11 @@ func CholeskyDecomposition(m Matrixable) Matrixable {
 }
 
 /*
-IncompleteCholeskyDecomposition computes the Incomplete Cholesky lower matrix decomposition
-for the given square and symmetric matrix.
+IncompleteCholeskyDecomposition computes the Incomplete Cholesky lower matrix
+decomposition for the given square and symmetric matrix.
 */
-func IncompleteCholeskyDecomposition(m Matrixable) Matrixable {
+// TODO: should return pointer
+func IncompleteCholeskyDecomposition(m ReadOnlyMatrix) ReadOnlyMatrix {
 	if !IsSquare(m) {
 		panic("Cannot use Cholesky factorization in non-square matrices")
 	}

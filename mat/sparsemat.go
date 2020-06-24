@@ -6,7 +6,7 @@ import (
 )
 
 /*
-SparseMat is an implementation of a sparse (does not store zeroes) Matrixable.
+A SparseMat is an implementation of a sparse (does not store zeroes) Matrixable.
 */
 type SparseMat struct {
 	rows, cols int
@@ -132,14 +132,14 @@ func (m SparseMat) NonZeroIndicesAtRow(row int) []int {
 /*
 AddInPlace adds this matrix with other and sets the aresult in this matrix.
 */
-func (m SparseMat) AddInPlace(other Matrixable) error {
+func (m SparseMat) AddInPlace(other ReadOnlyMatrix) error {
 	return nil
 }
 
 /*
 TimesInPlace multiplies this matrix times other and sets the result in this matrix.
 */
-func (m SparseMat) TimesInPlace(other Matrixable) error {
+func (m SparseMat) TimesInPlace(other ReadOnlyMatrix) error {
 	return nil
 }
 
@@ -170,7 +170,7 @@ func (m SparseMat) TimesVector(v *vec.Vector) *vec.Vector {
 /*
 TimesMatrix multiplies this matrix with other.
 */
-func (m SparseMat) TimesMatrix(other Matrixable) Matrixable {
+func (m SparseMat) TimesMatrix(other ReadOnlyMatrix) ReadOnlyMatrix {
 	if m.Cols() != other.Rows() {
 		panic("Can't multiply matrices due to size mismatch")
 	}
