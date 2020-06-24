@@ -1,4 +1,4 @@
-package inkmath
+package nums
 
 import (
 	"math"
