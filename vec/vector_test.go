@@ -3,6 +3,8 @@ package vec
 import (
 	"math"
 	"testing"
+
+	"github.com/angelsolaorbaiceta/inkmath/nums"
 )
 
 /* <--------------- Properties ---------------> */
@@ -11,7 +13,7 @@ func TestNorm(t *testing.T) {
 	expectedNorm := math.Sqrt(14.0)
 
 	if norm := v.Norm(); !nums.FuzzyEqual(norm, expectedNorm) {
-		t.Errorf("Wront Vector norm. Expected %f, but got %f", expectedNorm, norm)
+		t.Errorf("Wrong Vector norm. Expected %f, but got %f", expectedNorm, norm)
 	}
 }
 
