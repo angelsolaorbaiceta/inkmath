@@ -35,11 +35,11 @@ or the maximum number of iterations reached.
 */
 func (solver ConjugateGradientSolver) Solve(a mat.Matrixable, b *vec.Vector) *Solution {
 	var (
-		size             = b.Length()
-		x                = vec.Make(size)
-		r, oldr, p       *vec.Vector
-		alpha, beta, err float64
-		iter             int
+		size                = b.Length()
+		x                   = vec.Make(size)
+		r, oldr, p, aTimesP *vec.Vector
+		alpha, beta, err    float64
+		iter                int
 	)
 
 	solutionGoodEnough := func() bool {
@@ -62,10 +62,11 @@ func (solver ConjugateGradientSolver) Solve(a mat.Matrixable, b *vec.Vector) *So
 			return makeSolution(iter, solver.MaxError, x)
 		}
 
-		alpha = r.Times(r) / p.Times(a.TimesVector(p))
+		aTimesP = a.TimesVector(p)
+		alpha = r.Times(r) / p.Times(aTimesP)
 		x = x.Plus(p.Scaled(alpha))
 		oldr = r.Clone()
-		r = r.Minus(a.TimesVector(p).Scaled(alpha))
+		r = r.Minus(aTimesP.Scaled(alpha))
 		beta = r.Times(r) / oldr.Times(oldr)
 		p = r.Plus(p.Scaled(beta))
 	}
