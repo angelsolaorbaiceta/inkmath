@@ -25,7 +25,7 @@ CanSolve returns whether Conjugate Gradient is suitable for solving the given sy
 
 The conditions required are:
     - System matrix is square
-	- System matrix is symmetric
+		- System matrix is symmetric
     - System matrix and vector have same size
 */
 func (solver PreconditionedConjugateGradientSolver) CanSolve(m mat.Matrixable, v *vec.Vector) bool {
@@ -40,12 +40,12 @@ or the maximum number of iterations reached.
 */
 func (solver PreconditionedConjugateGradientSolver) Solve(a mat.Matrixable, b *vec.Vector) *Solution {
 	var (
-		size             = b.Length()
-		x                = vec.Make(size)
-		precond          = computePreconditioner(a)
-		r, oldr, p       *vec.Vector
-		alpha, beta, err float64
-		iter             int
+		size                      = b.Length()
+		x                         = vec.Make(size)
+		precond                   = computePreconditioner(a)
+		r, oldr, p, precondTimesR *vec.Vector
+		alpha, beta, err          float64
+		iter                      int
 	)
 
 	solutionGoodEnough := func() bool {
@@ -68,12 +68,13 @@ func (solver PreconditionedConjugateGradientSolver) Solve(a mat.Matrixable, b *v
 			return makeSolution(iter, solver.MaxError, x)
 		}
 
-		alpha = r.Times(precond.TimesVector(r)) / (p.Times(a.TimesVector(p))) // r.Times(r) / p.Times(a.TimesVector(p))
+		alpha = r.Times(precond.TimesVector(r)) / (p.Times(a.TimesVector(p)))
 		x = x.Plus(p.Scaled(alpha))
 		oldr = r.Clone()
 		r = oldr.Minus(a.TimesVector(p).Scaled(alpha))
-		beta = r.Times(precond.TimesVector(r)) / oldr.Times(precond.TimesVector(oldr))
-		p = precond.TimesVector(r).Plus(p.Scaled(beta))
+		precondTimesR = precond.TimesVector(r)
+		beta = r.Times(precondTimesR) / oldr.Times(precond.TimesVector(oldr))
+		p = precondTimesR.Plus(p.Scaled(beta))
 	}
 
 	return makeErrorSolution(iter, err, x)
