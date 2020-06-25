@@ -18,9 +18,9 @@ var (
 /*
 ToImage creates an image with as many width pixels as columns has the matrix and
 as many height pixels as rows. Each pixel will be coloured:
-	- Gray if matrix value is zero
-	- Red if matrix value is positive
-	- Blue if matrix value is negative
+	- Gray if the value is zero
+	- Red if the value is positive
+	- Blue if the value is negative
 */
 func ToImage(m ReadOnlyMatrix, filePath string) {
 	var (

@@ -21,7 +21,7 @@ type ReadOnlyMatrix interface {
 	/* Operations */
 	RowTimesVector(row int, v *vec.Vector) float64
 	TimesVector(v *vec.Vector) *vec.Vector
-	TimesMatrix(other ReadOnlyMatrix) ReadOnlyMatrix // TODO: should return pointer
+	TimesMatrix(other ReadOnlyMatrix) ReadOnlyMatrix
 }
 
 /*
