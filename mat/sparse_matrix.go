@@ -146,9 +146,9 @@ func (m SparseMat) TimesInPlace(other ReadOnlyMatrix) error {
 /*
 TimesVector multiplies this matrix and a vector.
 */
-func (m SparseMat) TimesVector(v *vec.Vector) *vec.Vector {
-	if m.Cols() != v.Length() {
-		panic("Can't multiply matrix vs vector due to size mismatch")
+func (m SparseMat) TimesVector(vector *vec.Vector) *vec.Vector {
+	if m.Cols() != vector.Length() {
+		panic("Can't multiply matrix and vector due to size mismatch")
 	}
 
 	var (
@@ -156,19 +156,21 @@ func (m SparseMat) TimesVector(v *vec.Vector) *vec.Vector {
 		sum    float64
 	)
 
-	for i, row := range m.data {
+	for rowIndex, row := range m.data {
 		sum = 0.0
-		for j, val := range row {
-			sum += val * v.Value(j)
+
+		for colIndex, matrixValue := range row {
+			sum += matrixValue * vector.Value(colIndex)
 		}
-		result.SetValue(i, sum)
+
+		result.SetValue(rowIndex, sum)
 	}
 
 	return result
 }
 
 /*
-TimesMatrix multiplies this matrix with other.
+TimesMatrix multiplies this matrix times other.
 */
 func (m SparseMat) TimesMatrix(other ReadOnlyMatrix) ReadOnlyMatrix {
 	if m.Cols() != other.Rows() {
@@ -184,7 +186,9 @@ func (m SparseMat) TimesMatrix(other ReadOnlyMatrix) ReadOnlyMatrix {
 
 	for i, row := range m.data {
 		for j := 0; j < cols; j++ {
+
 			sum = 0.0
+
 			for k, val := range row {
 				sum += val * other.Value(k, j)
 			}
@@ -200,15 +204,16 @@ func (m SparseMat) TimesMatrix(other ReadOnlyMatrix) ReadOnlyMatrix {
 RowTimesVector returns the result of multiplying the row at the given index
 times the given vector.
 */
-func (m SparseMat) RowTimesVector(row int, v *vec.Vector) float64 {
-	if m.Cols() != v.Length() {
+func (m SparseMat) RowTimesVector(row int, vector *vec.Vector) float64 {
+	if m.Cols() != vector.Length() {
 		panic("Can't multiply matrix row with vector due to size mismatch")
 	}
 
 	if rowData, hasRow := m.data[row]; hasRow {
 		result := 0.0
+
 		for i, val := range rowData {
-			result += v.Value(i) * val
+			result += vector.Value(i) * val
 		}
 
 		return result
