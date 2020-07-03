@@ -37,8 +37,4 @@ type MutableMatrix interface {
 
 	SetZeroCol(int)
 	SetIdentityRow(int)
-
-	/* Operations */
-	AddInPlace(other ReadOnlyMatrix) error
-	TimesInPlace(other ReadOnlyMatrix) error
 }

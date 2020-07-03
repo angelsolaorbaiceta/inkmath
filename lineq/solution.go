@@ -16,7 +16,7 @@ type Solution struct {
 	Solution       *vec.Vector
 }
 
-/* ::::::::::::::: Construction ::::::::::::::: */
+/* <-- Construction --> */
 
 func makeSolution(iterCount int, minError float64, solution *vec.Vector) *Solution {
 	return &Solution{
@@ -27,7 +27,11 @@ func makeSolution(iterCount int, minError float64, solution *vec.Vector) *Soluti
 	}
 }
 
-func makeErrorSolution(iterCount int, minError float64, partialSolution *vec.Vector) *Solution {
+func makeErrorSolution(
+	iterCount int,
+	minError float64,
+	partialSolution *vec.Vector,
+) *Solution {
 	return &Solution{
 		ReachedMaxIter: true,
 		MinError:       minError,
@@ -36,7 +40,7 @@ func makeErrorSolution(iterCount int, minError float64, partialSolution *vec.Vec
 	}
 }
 
-/* ::::::::::::::: Methods ::::::::::::::: */
+/* <-- Methods --> */
 func (sol Solution) String() string {
 	if sol.ReachedMaxIter {
 		return fmt.Sprintf(

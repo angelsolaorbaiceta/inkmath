@@ -15,7 +15,7 @@ type ConjugateGradientSolver struct {
 	MaxIter  int
 }
 
-/* ::::::::::::::: Methods : Solver ::::::::::::::: */
+/* <-- Methods : Solver --> */
 
 /*
 CanSolve returns whether Conjugate Gradient is suitable for solving the given

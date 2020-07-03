@@ -47,20 +47,6 @@ func TestDenseMatrixSetIdentityRow(t *testing.T) {
 	}
 }
 
-func TestAddDenseMatricesInPlace(t *testing.T) {
-	matA, matB := makeDenseTestMatrices()
-	matA.AddInPlace(matB)
-
-	assertMatrixAddition(matA, t)
-}
-
-func TestMultiplyDenseMatricesInPlace(t *testing.T) {
-	matA, matB := makeDenseTestMatrices()
-	matA.TimesInPlace(matB)
-
-	assertMatrixMultiplication(matA, t)
-}
-
 func TestMultiplyDenseMatrices(t *testing.T) {
 	matA, matB := makeDenseTestMatrices()
 	matC := matA.TimesMatrix(matB)

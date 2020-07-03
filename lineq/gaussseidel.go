@@ -15,7 +15,7 @@ type GaussSeidelSolver struct {
 	MaxIter  int
 }
 
-/* ::::::::::::::: Methods : Solver ::::::::::::::: */
+/* <-- Methods : Solver --> */
 
 /*
 CanSolve returns whether Jacobi is suitable for solving the given system of equations.

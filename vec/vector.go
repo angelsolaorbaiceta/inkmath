@@ -12,7 +12,7 @@ type Vector struct {
 	data   []float64
 }
 
-/* ::::::::::::::: Construction ::::::::::::::: */
+/* <-- Construction --> */
 
 // Make returns a vector with the given size all filled with zeroes.
 func Make(size int) *Vector {
@@ -29,7 +29,7 @@ func MakeWithValues(vals []float64) *Vector {
 	return v
 }
 
-/* ::::::::::::::: Properties ::::::::::::::: */
+/* <-- Properties --> */
 
 // Length is the size of the vector.
 func (v Vector) Length() int {
@@ -46,7 +46,7 @@ func (v Vector) Norm() float64 {
 	return math.Sqrt(norm)
 }
 
-/* ::::::::::::::: Methods ::::::::::::::: */
+/* <-- Methods --> */
 
 // SetValue sets the given value at the given index.
 func (v *Vector) SetValue(i int, value float64) {
@@ -112,7 +112,7 @@ func (v Vector) Scaled(factor float64) *Vector {
 	return scaled
 }
 
-/* ::::::::::::::: Operations ::::::::::::::: */
+/* <-- Operations --> */
 
 // Plus adds two vectors.
 func (v Vector) Plus(other *Vector) *Vector {

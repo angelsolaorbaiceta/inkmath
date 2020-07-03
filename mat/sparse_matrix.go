@@ -13,7 +13,7 @@ type SparseMat struct {
 	data       map[int]map[int]float64
 }
 
-/* ::::::::::::::: Construction ::::::::::::::: */
+/* <-- Construction --> */
 
 /*
 MakeSparse creates a new sparse matrix with the indicated number of rows and columns.
@@ -35,7 +35,7 @@ func MakeIdentity(size int) *SparseMat {
 	return identity
 }
 
-/* ::::::::::::::: Properties ::::::::::::::: */
+/* <-- Properties --> */
 
 // Rows returns the number of rows in the matrix.
 func (m SparseMat) Rows() int { return m.rows }
@@ -43,7 +43,7 @@ func (m SparseMat) Rows() int { return m.rows }
 // Cols returns the number of columns in the matrix.
 func (m SparseMat) Cols() int { return m.cols }
 
-/* ::::::::::::::: Methods ::::::::::::::: */
+/* <-- Methods --> */
 
 // SetZeroCol sets all the values in the given column as zero.
 func (m *SparseMat) SetZeroCol(col int) {
@@ -127,7 +127,7 @@ func (m SparseMat) NonZeroIndicesAtRow(row int) []int {
 	return []int{}
 }
 
-/* ::::::::::::::: Operations ::::::::::::::: */
+/* <-- Operations --> */
 
 /*
 AddInPlace adds this matrix with other and sets the aresult in this matrix.
