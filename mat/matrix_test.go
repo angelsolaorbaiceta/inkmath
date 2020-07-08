@@ -1,3 +1,19 @@
+/*
+Copyright 2020 Angel Sola Orbaiceta
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+		http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
 package mat
 
 import (
@@ -9,43 +25,43 @@ import (
 
 /* <--------------- Dense ---------------> */
 
-func TestDenseMatrixAddToValue(t *testing.T) {
-	m := MakeDense(2, 2)
-	m.AddToValue(0, 1, 5.0)
-	m.AddToValue(0, 1, 6.0)
+// func TestDenseMatrixAddToValue(t *testing.T) {
+// 	m := MakeDense(2, 2)
+// 	m.AddToValue(0, 1, 5.0)
+// 	m.AddToValue(0, 1, 6.0)
 
-	if m.Value(0, 1) != 11.0 {
-		t.Error("Value not as expected")
-	}
-}
+// 	if m.Value(0, 1) != 11.0 {
+// 		t.Error("Value not as expected")
+// 	}
+// }
 
-func TestDenseMatrixSetZeroCol(t *testing.T) {
-	m := MakeDense(3, 3)
-	m.SetValue(0, 1, 1.0)
-	m.SetValue(1, 1, 2.0)
-	m.SetValue(2, 1, 3.0)
-	m.SetZeroCol(1)
+// func TestDenseMatrixSetZeroCol(t *testing.T) {
+// 	m := MakeDense(3, 3)
+// 	m.SetValue(0, 1, 1.0)
+// 	m.SetValue(1, 1, 2.0)
+// 	m.SetValue(2, 1, 3.0)
+// 	m.SetZeroCol(1)
 
-	if !nums.IsCloseToZero(m.Value(0, 1)) ||
-		!nums.IsCloseToZero(m.Value(1, 1)) ||
-		!nums.IsCloseToZero(m.Value(2, 1)) {
-		t.Error("Column expected to be zero")
-	}
-}
+// 	if !nums.IsCloseToZero(m.Value(0, 1)) ||
+// 		!nums.IsCloseToZero(m.Value(1, 1)) ||
+// 		!nums.IsCloseToZero(m.Value(2, 1)) {
+// 		t.Error("Column expected to be zero")
+// 	}
+// }
 
-func TestDenseMatrixSetIdentityRow(t *testing.T) {
-	m := MakeDense(3, 3)
-	m.SetValue(1, 0, 4.0)
-	m.SetValue(1, 1, 4.0)
-	m.SetValue(1, 2, 4.0)
-	m.SetIdentityRow(1)
+// func TestDenseMatrixSetIdentityRow(t *testing.T) {
+// 	m := MakeDense(3, 3)
+// 	m.SetValue(1, 0, 4.0)
+// 	m.SetValue(1, 1, 4.0)
+// 	m.SetValue(1, 2, 4.0)
+// 	m.SetIdentityRow(1)
 
-	if !nums.IsCloseToZero(m.Value(1, 0)) ||
-		!nums.FuzzyEqual(m.Value(1, 1), 1.0) ||
-		!nums.IsCloseToZero(m.Value(1, 2)) {
-		t.Error("Row expected to be identity")
-	}
-}
+// 	if !nums.IsCloseToZero(m.Value(1, 0)) ||
+// 		!nums.FuzzyEqual(m.Value(1, 1), 1.0) ||
+// 		!nums.IsCloseToZero(m.Value(1, 2)) {
+// 		t.Error("Row expected to be identity")
+// 	}
+// }
 
 func TestMultiplyDenseMatrices(t *testing.T) {
 	matA, matB := makeDenseTestMatrices()

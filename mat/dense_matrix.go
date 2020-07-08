@@ -1,3 +1,19 @@
+/*
+Copyright 2020 Angel Sola Orbaiceta
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+		http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
 package mat
 
 import (
@@ -18,17 +34,18 @@ type DenseMat struct {
 
 /* <-- Construction --> */
 
-// MakeSquareDense creates a new dense matrix (strores zeroes) with the given dimension all filled with zeroes.
+/*
+MakeSquareDense creates a new dense matrix (strores zeroes) with the given dimension
+all filled with zeroes.
+*/
 func MakeSquareDense(size int) *DenseMat {
-	data := make([][]float64, size)
-	for i := 0; i < size; i++ {
-		data[i] = make([]float64, size)
-	}
-
-	return &DenseMat{size, size, data}
+	return MakeDense(size, size)
 }
 
-// MakeDense creates a new dense matrix (stores zeroes) with the given rows and columns filled with zeroes.
+/*
+MakeDense creates a new dense matrix (stores zeroes) with the given rows and columns
+filled with zeroes.
+*/
 func MakeDense(rows, cols int) *DenseMat {
 	data := make([][]float64, rows)
 	for i := 0; i < rows; i++ {
@@ -36,6 +53,30 @@ func MakeDense(rows, cols int) *DenseMat {
 	}
 
 	return &DenseMat{rows, cols, data}
+}
+
+/*
+MakeDenseWithData creates a new matrix initialized with the given data.
+*/
+func MakeDenseWithData(rows, cols int, data []float64) *DenseMat {
+	if rows*cols != len(data) {
+		panic("Wrong number of items: can't initialize matrix")
+	}
+
+	var (
+		matrix = MakeDense(rows, cols)
+		offset int
+	)
+
+	for rowIndex := 0; rowIndex < rows; rowIndex++ {
+		offset = rowIndex * cols
+
+		for colIndex := 0; colIndex < cols; colIndex++ {
+			matrix.SetValue(rowIndex, colIndex, data[offset+colIndex])
+		}
+	}
+
+	return matrix
 }
 
 /* <-- Properties --> */
@@ -58,12 +99,16 @@ func (m *DenseMat) SetValue(row, col int, value float64) {
 	m.data[row][col] = value
 }
 
-// AddToValue adds the given value to the existing value in the indicated row and column.
+/*
+AddToValue adds the given value to the existing value in the indicated row and column.
+*/
 func (m *DenseMat) AddToValue(row, col int, value float64) {
 	m.data[row][col] += value
 }
 
-// SetZeroCol sets all the values in the given column as zero.
+/*
+SetZeroCol sets all the values in the given column as zero.
+*/
 func (m *DenseMat) SetZeroCol(col int) {
 	for row := 0; row < m.rows; row++ {
 		m.data[row][col] = 0.0
