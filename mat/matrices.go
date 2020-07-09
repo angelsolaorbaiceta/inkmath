@@ -126,11 +126,22 @@ func MainDiagonal(m ReadOnlyMatrix) *vec.Vector {
 	return diag
 }
 
-func matrixContainsData(matrix ReadOnlyMatrix, data []float64) bool {
+/*
+MatrixContainsData tests whether a given matrix has exactly the same data as the slice
+of float64 numbers.
+
+The number of items in the matrix and the slice need to be the same in order for this
+test to return true.
+*/
+func MatrixContainsData(matrix ReadOnlyMatrix, data []float64) bool {
 	var (
 		offset    int
 		got, want float64
 	)
+
+	if matrix.Rows()*matrix.Cols() != len(data) {
+		return false
+	}
 
 	for rowIndex := 0; rowIndex < matrix.Rows(); rowIndex++ {
 		offset = rowIndex * matrix.Cols()
@@ -146,4 +157,28 @@ func matrixContainsData(matrix ReadOnlyMatrix, data []float64) bool {
 	}
 
 	return true
+}
+
+/*
+FillMatrixWithData fills the matrix using the given slice of float64 numbers. This
+function expects the matrix to have the same number of items as the slice.
+*/
+func FillMatrixWithData(matrix MutableMatrix, data []float64) {
+	if matrix.Rows()*matrix.Cols() != len(data) {
+		panic("Wrong number of items: can't initialize matrix")
+	}
+
+	var (
+		offset int
+		rows   = matrix.Rows()
+		cols   = matrix.Cols()
+	)
+
+	for rowIndex := 0; rowIndex < rows; rowIndex++ {
+		offset = rowIndex * cols
+
+		for colIndex := 0; colIndex < cols; colIndex++ {
+			matrix.SetValue(rowIndex, colIndex, data[offset+colIndex])
+		}
+	}
 }

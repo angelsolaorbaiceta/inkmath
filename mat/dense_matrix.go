@@ -59,42 +59,36 @@ func MakeDense(rows, cols int) *DenseMat {
 MakeDenseWithData creates a new matrix initialized with the given data.
 */
 func MakeDenseWithData(rows, cols int, data []float64) *DenseMat {
-	if rows*cols != len(data) {
-		panic("Wrong number of items: can't initialize matrix")
-	}
-
-	var (
-		matrix = MakeDense(rows, cols)
-		offset int
-	)
-
-	for rowIndex := 0; rowIndex < rows; rowIndex++ {
-		offset = rowIndex * cols
-
-		for colIndex := 0; colIndex < cols; colIndex++ {
-			matrix.SetValue(rowIndex, colIndex, data[offset+colIndex])
-		}
-	}
+	matrix := MakeDense(rows, cols)
+	FillMatrixWithData(matrix, data)
 
 	return matrix
 }
 
 /* <-- Properties --> */
 
-// Rows returns the number of rows in the matrix.
+/*
+Rows returns the number of rows in the matrix.
+*/
 func (m DenseMat) Rows() int { return m.rows }
 
-// Cols returns the number of columns in the matrix.
+/*
+Cols returns the number of columns in the matrix.
+*/
 func (m DenseMat) Cols() int { return m.cols }
 
 /* <-- Methods --> */
 
-// Value returns the value at a given row and column.
+/*
+Value returns the value at a given row and column.
+*/
 func (m DenseMat) Value(row, col int) float64 {
 	return m.data[row][col]
 }
 
-// SetValue sets a value for a given row and column.
+/*
+SetValue sets a value for a given row and column.
+*/
 func (m *DenseMat) SetValue(row, col int, value float64) {
 	m.data[row][col] = value
 }
@@ -143,7 +137,7 @@ func (m DenseMat) NonZeroIndicesAtRow(row int) []int {
 /* <-- Operations --> */
 
 /*
-TimesVector multiplies this matrix and a vector.
+TimesVector creates a new vector result of multiplying this matrix and a vector.
 */
 func (m DenseMat) TimesVector(v *vec.Vector) *vec.Vector {
 	if m.Cols() != v.Length() {
@@ -151,16 +145,18 @@ func (m DenseMat) TimesVector(v *vec.Vector) *vec.Vector {
 	}
 
 	var (
-		result = vec.Make(m.Cols())
+		result = vec.Make(m.rows)
 		sum    float64
 	)
 
-	for i := 0; i < m.Rows(); i++ {
+	for rowIndex := 0; rowIndex < m.Rows(); rowIndex++ {
 		sum = 0.0
-		for j := 0; j < m.Cols(); j++ {
-			sum += m.data[i][j] * v.Value(j)
+
+		for colIndex := 0; colIndex < m.Cols(); colIndex++ {
+			sum += m.data[rowIndex][colIndex] * v.Value(colIndex)
 		}
-		result.SetValue(i, sum)
+
+		result.SetValue(rowIndex, sum)
 	}
 
 	return result

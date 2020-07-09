@@ -32,8 +32,10 @@ var (
 )
 
 /*
-ToImage creates an image with as many width pixels as columns has the matrix and
-as many height pixels as rows. Each pixel will be coloured:
+ToImage creates an image with as many width pixels as columns has the matrix and as many
+height pixels as rows.
+
+Each pixel will be colored:
 	- Gray if the value is zero
 	- Red if the value is positive
 	- Blue if the value is negative

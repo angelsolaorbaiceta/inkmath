@@ -22,7 +22,7 @@ import (
 )
 
 /*
-A SparseMat is an implementation of a sparse (does not store zeroes) Matrixable.
+A SparseMat is a matrix where the zeroes aren't stored.
 */
 type SparseMat struct {
 	rows, cols int
@@ -32,10 +32,31 @@ type SparseMat struct {
 /* <-- Construction --> */
 
 /*
-MakeSparse creates a new sparse matrix with the indicated number of rows and columns.
+MakeSquareSparse creates a new square sparse matrix with the given number of rows
+and columns.
+*/
+func MakeSquareSparse(size int) *SparseMat {
+	return MakeSparse(size, size)
+}
+
+/*
+MakeSparse creates a new sparse matrix with the given number of rows and columns.
 */
 func MakeSparse(rows, cols int) *SparseMat {
 	return &SparseMat{rows, cols, make(map[int]map[int]float64)}
+}
+
+/*
+MakeSparseWithData creates a new sparse matrix initialized with the given data.
+
+This method is mainly used for testing purposes as it makes no sense to create a sparse
+matrix with a given data slice. Most of the elements in a sparse matrix should be zero.
+*/
+func MakeSparseWithData(rows, cols int, data []float64) *SparseMat {
+	matrix := MakeSparse(rows, cols)
+	FillMatrixWithData(matrix, data)
+
+	return matrix
 }
 
 /*
@@ -53,15 +74,21 @@ func MakeIdentity(size int) *SparseMat {
 
 /* <-- Properties --> */
 
-// Rows returns the number of rows in the matrix.
+/*
+Rows returns the number of rows in the matrix.
+*/
 func (m SparseMat) Rows() int { return m.rows }
 
-// Cols returns the number of columns in the matrix.
+/*
+Cols returns the number of columns in the matrix.
+*/
 func (m SparseMat) Cols() int { return m.cols }
 
 /* <-- Methods --> */
 
-// SetZeroCol sets all the values in the given column as zero.
+/*
+SetZeroCol sets all the values in the given column as zero.
+*/
 func (m *SparseMat) SetZeroCol(col int) {
 	for i := range m.data {
 		m.SetValue(i, col, 0.0)
@@ -80,7 +107,9 @@ func (m *SparseMat) SetIdentityRow(row int) {
 	m.SetValue(row, row, 1.0)
 }
 
-// Value returns the value at a given row and column.
+/*
+Value returns the value at a given row and column.
+*/
 func (m SparseMat) Value(row, col int) float64 {
 	if dataRow, hasRow := m.data[row]; hasRow {
 		if value, hasValue := dataRow[col]; hasValue {
@@ -91,7 +120,9 @@ func (m SparseMat) Value(row, col int) float64 {
 	return 0.0
 }
 
-// SetValue sets a value for a given row and column.
+/*
+SetValue sets a value for a given row and column.
+*/
 func (m *SparseMat) SetValue(row, col int, value float64) {
 	if nums.IsCloseToZero(value) {
 		m.removeValueAt(row, col)
@@ -113,7 +144,9 @@ func (m *SparseMat) removeValueAt(row, col int) {
 	}
 }
 
-// AddToValue adds the given value to the existing value in the indicated row and column.
+/*
+AddToValue adds the given value to the existing value in the indicated row and column.
+*/
 func (m *SparseMat) AddToValue(row, col int, value float64) {
 	if dataRow, hasRow := m.data[row]; hasRow {
 		dataRow[col] += value
@@ -146,20 +179,6 @@ func (m SparseMat) NonZeroIndicesAtRow(row int) []int {
 /* <-- Operations --> */
 
 /*
-AddInPlace adds this matrix with other and sets the aresult in this matrix.
-*/
-func (m SparseMat) AddInPlace(other ReadOnlyMatrix) error {
-	return nil
-}
-
-/*
-TimesInPlace multiplies this matrix times other and sets the result in this matrix.
-*/
-func (m SparseMat) TimesInPlace(other ReadOnlyMatrix) error {
-	return nil
-}
-
-/*
 TimesVector multiplies this matrix and a vector.
 */
 func (m SparseMat) TimesVector(vector *vec.Vector) *vec.Vector {
@@ -168,7 +187,7 @@ func (m SparseMat) TimesVector(vector *vec.Vector) *vec.Vector {
 	}
 
 	var (
-		result = vec.Make(m.Cols())
+		result = vec.Make(m.rows)
 		sum    float64
 	)
 
