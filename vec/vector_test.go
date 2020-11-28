@@ -33,6 +33,15 @@ func TestNorm(t *testing.T) {
 	}
 }
 
+func TestSetGetValue(t *testing.T) {
+	v := Make(3)
+	v.SetValue(1, 25)
+
+	if value := v.Value(1); value != 25 {
+		t.Errorf("Expected %f to be 25", value)
+	}
+}
+
 /* <--------------- Methods ---------------> */
 func TestOpposite(t *testing.T) {
 	v := MakeWithValues([]float64{1, 2, 3})
@@ -76,6 +85,18 @@ func TestEquals(t *testing.T) {
 			t.Errorf("Expected %v and %v to be equal", u, v)
 		}
 	})
+}
+
+func TestScaled(t *testing.T) {
+	var (
+		u    = MakeWithValues([]float64{1, 2})
+		want = MakeWithValues([]float64{3, 6})
+		got  = u.Scaled(3)
+	)
+
+	if !got.Equals(want) {
+		t.Errorf("Expected %v, but got %v", got, want)
+	}
 }
 
 /* <--------------- Operations ---------------> */
