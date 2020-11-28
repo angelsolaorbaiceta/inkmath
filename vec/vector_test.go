@@ -25,11 +25,20 @@ import (
 
 /* <--------------- Properties ---------------> */
 func TestNorm(t *testing.T) {
-	v := MakeWithValues([]float64{1, 2, 3})
-	expectedNorm := math.Sqrt(14.0)
+	var (
+		v    = MakeWithValues([]float64{1, 2, 3})
+		want = math.Sqrt(14.0)
+	)
 
-	if norm := v.Norm(); !nums.FuzzyEqual(norm, expectedNorm) {
-		t.Errorf("Wrong Vector norm. Expected %f, but got %f", expectedNorm, norm)
+	if norm := v.Norm(); !nums.FuzzyEqual(norm, want) {
+		t.Errorf("Wrong Vector norm. Expected %f, but got %f", want, norm)
+	}
+}
+
+func TestLength(t *testing.T) {
+	v := Make(3)
+	if length := v.Length(); length != 3 {
+		t.Errorf("Expected %d to be %d", length, 3)
 	}
 }
 
@@ -44,10 +53,12 @@ func TestSetGetValue(t *testing.T) {
 
 /* <--------------- Methods ---------------> */
 func TestOpposite(t *testing.T) {
-	v := MakeWithValues([]float64{1, 2, 3})
-	expectedOpposite := MakeWithValues([]float64{-1, -2, -3})
+	var (
+		v    = MakeWithValues([]float64{1, 2, 3})
+		want = MakeWithValues([]float64{-1, -2, -3})
+	)
 
-	if !v.Opposite().Equals(expectedOpposite) {
+	if !v.Opposite().Equals(want) {
 		t.Error("Opposite vector not as expected")
 	}
 }
@@ -99,36 +110,49 @@ func TestScaled(t *testing.T) {
 	}
 }
 
+func TestClone(t *testing.T) {
+	u := MakeWithValues([]float64{1, 2, 3})
+	if got := u.Clone(); !got.Equals(u) {
+		t.Errorf("Want %v, but got %v", u, got)
+	}
+}
+
 /* <--------------- Operations ---------------> */
 func TestAdd(t *testing.T) {
-	u := MakeWithValues([]float64{1, 2})
-	v := MakeWithValues([]float64{3, 4})
-	sum := u.Plus(v)
-	expectedSum := MakeWithValues([]float64{4, 6})
+	var (
+		u    = MakeWithValues([]float64{1, 2})
+		v    = MakeWithValues([]float64{3, 4})
+		got  = u.Plus(v)
+		want = MakeWithValues([]float64{4, 6})
+	)
 
-	if !sum.Equals(expectedSum) {
-		t.Errorf("Wrong vector sum. Expected %v, but got %v", expectedSum, sum)
+	if !got.Equals(want) {
+		t.Errorf("Wrong vector sum. Expected %v, but got %v", want, got)
 	}
 }
 
 func TestSubtract(t *testing.T) {
-	u := MakeWithValues([]float64{1, 2})
-	v := MakeWithValues([]float64{5, 4})
-	sub := u.Minus(v)
-	expectedSub := MakeWithValues([]float64{-4, -2})
+	var (
+		u    = MakeWithValues([]float64{1, 2})
+		v    = MakeWithValues([]float64{5, 4})
+		got  = u.Minus(v)
+		want = MakeWithValues([]float64{-4, -2})
+	)
 
-	if !sub.Equals(expectedSub) {
-		t.Errorf("Wrong vector sum. Expected %v, but got %v", expectedSub, sub)
+	if !got.Equals(want) {
+		t.Errorf("Expected %v, but got %v", want, got)
 	}
 }
 
 func TestMultiply(t *testing.T) {
-	u := MakeWithValues([]float64{1, 2})
-	v := MakeWithValues([]float64{3, 4})
-	prod := u.Times(v)
-	expectedProd := 11.0
+	var (
+		u    = MakeWithValues([]float64{1, 2})
+		v    = MakeWithValues([]float64{3, 4})
+		got  = u.Times(v)
+		want = 11.0
+	)
 
-	if !nums.FuzzyEqual(prod, expectedProd) {
-		t.Errorf("Wrong vector prod. Expected %f, but got %f", expectedProd, prod)
+	if !nums.FuzzyEqual(got, want) {
+		t.Errorf("Expected %f, but got %f", want, got)
 	}
 }

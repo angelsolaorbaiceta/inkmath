@@ -94,6 +94,9 @@ func (v Vector) Equals(other *Vector) bool {
 	return true
 }
 
+/*
+Clone creates an exact copy of the vector.
+*/
 func (v Vector) Clone() *Vector {
 	vec := Make(v.Length())
 	for i, val := range v.data {
