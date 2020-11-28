@@ -43,6 +43,41 @@ func TestOpposite(t *testing.T) {
 	}
 }
 
+func TestEquals(t *testing.T) {
+	t.Run("vectors with differnet sizes aren't equal", func(t *testing.T) {
+		var (
+			u = Make(2)
+			v = Make(3)
+		)
+
+		if u.Equals(v) {
+			t.Errorf("Expected %v and %v to be different", u, v)
+		}
+	})
+
+	t.Run("vectors are't equal", func(t *testing.T) {
+		var (
+			u = MakeWithValues([]float64{1, 2, 3})
+			v = MakeWithValues([]float64{4, 5, 6})
+		)
+
+		if u.Equals(v) {
+			t.Errorf("Expected %v and %v to be different", u, v)
+		}
+	})
+
+	t.Run("vectors are equal", func(t *testing.T) {
+		var (
+			u = MakeWithValues([]float64{1, 2, 3})
+			v = MakeWithValues([]float64{1, 2, 3})
+		)
+
+		if !u.Equals(v) {
+			t.Errorf("Expected %v and %v to be equal", u, v)
+		}
+	})
+}
+
 /* <--------------- Operations ---------------> */
 func TestAdd(t *testing.T) {
 	u := MakeWithValues([]float64{1, 2})
