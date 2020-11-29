@@ -21,8 +21,11 @@ import (
 )
 
 func TestCholeskyDecomposition(t *testing.T) {
-	m, expectedDecomposition := makeCholeskyMatrix(), makeCholeskyDecomposition()
-	cholesky := CholeskyDecomposition(m)
+	var (
+		m                     = makeCholeskyMatrix()
+		expectedDecomposition = makeCholeskyDecomposition()
+		cholesky              = CholeskyDecomposition(m)
+	)
 
 	if !AreEqual(cholesky, expectedDecomposition) {
 		t.Error("Wrong Cholesky factorization")
@@ -30,8 +33,11 @@ func TestCholeskyDecomposition(t *testing.T) {
 }
 
 func TestIncompleteCholeskyDecomposition(t *testing.T) {
-	m, expectedDecomposition := makeCholeskyMatrix(), makeCholeskyDecomposition()
-	cholesky := IncompleteCholeskyDecomposition(m)
+	var (
+		m                     = makeCholeskyMatrix()
+		expectedDecomposition = makeCholeskyDecomposition()
+		cholesky              = IncompleteCholeskyDecomposition(m)
+	)
 
 	if !AreEqual(cholesky, expectedDecomposition) {
 		t.Error("Wrong Cholesky factorization")
