@@ -1,19 +1,3 @@
-/*
-Copyright 2020 Angel Sola Orbaiceta
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-		http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
 package mat
 
 import (
@@ -21,27 +5,18 @@ import (
 	"github.com/angelsolaorbaiceta/inkmath/vec"
 )
 
-/*
-A SparseMat is a matrix where the zeroes aren't stored.
-*/
+// A SparseMat is a matrix where the zeroes aren't stored.
 type SparseMat struct {
 	rows, cols int
 	data       map[int]map[int]float64
 }
 
-/* <-- Construction --> */
-
-/*
-MakeSquareSparse creates a new square sparse matrix with the given number of rows
-and columns.
-*/
+// MakeSquareSparse creates a new square sparse matrix with the given number of rows and columns.
 func MakeSquareSparse(size int) *SparseMat {
 	return MakeSparse(size, size)
 }
 
-/*
-MakeSparse creates a new sparse matrix with the given number of rows and columns.
-*/
+// MakeSparse creates a new sparse matrix with the given number of rows and columns.
 func MakeSparse(rows, cols int) *SparseMat {
 	return &SparseMat{rows, cols, make(map[int]map[int]float64)}
 }
@@ -72,23 +47,13 @@ func MakeIdentity(size int) *SparseMat {
 	return identity
 }
 
-/* <-- Properties --> */
-
-/*
-Rows returns the number of rows in the matrix.
-*/
+// Rows returns the number of rows in the matrix.
 func (m SparseMat) Rows() int { return m.rows }
 
-/*
-Cols returns the number of columns in the matrix.
-*/
+// Cols returns the number of columns in the matrix.
 func (m SparseMat) Cols() int { return m.cols }
 
-/* <-- Methods --> */
-
-/*
-SetZeroCol sets all the values in the given column as zero.
-*/
+// SetZeroCol sets all the values in the given column as zero.
 func (m *SparseMat) SetZeroCol(col int) {
 	for i := range m.data {
 		m.SetValue(i, col, 0.0)
@@ -96,20 +61,15 @@ func (m *SparseMat) SetZeroCol(col int) {
 }
 
 /*
-SetIdentityRow sets the given row as identity: one in the main diagonal value,
-and zeroes in all other positions of the row.
+SetIdentityRow sets the given row as identity: one in the main diagonal value, and zeroes in all
+other positions of the row.
 */
 func (m *SparseMat) SetIdentityRow(row int) {
-	if _, hasRow := m.data[row]; hasRow {
-		delete(m.data, row)
-	}
-
+	delete(m.data, row)
 	m.SetValue(row, row, 1.0)
 }
 
-/*
-Value returns the value at a given row and column.
-*/
+// Value returns the value at a given row and column.
 func (m SparseMat) Value(row, col int) float64 {
 	if dataRow, hasRow := m.data[row]; hasRow {
 		if value, hasValue := dataRow[col]; hasValue {
@@ -120,9 +80,7 @@ func (m SparseMat) Value(row, col int) float64 {
 	return 0.0
 }
 
-/*
-SetValue sets a value for a given row and column.
-*/
+// SetValue sets a value for a given row and column.
 func (m *SparseMat) SetValue(row, col int, value float64) {
 	if nums.IsCloseToZero(value) {
 		m.removeValueAt(row, col)
@@ -144,9 +102,7 @@ func (m *SparseMat) removeValueAt(row, col int) {
 	}
 }
 
-/*
-AddToValue adds the given value to the existing value in the indicated row and column.
-*/
+// AddToValue adds the given value to the existing value in the indicated row and column.
 func (m *SparseMat) AddToValue(row, col int, value float64) {
 	if dataRow, hasRow := m.data[row]; hasRow {
 		dataRow[col] += value
@@ -155,9 +111,7 @@ func (m *SparseMat) AddToValue(row, col int, value float64) {
 	}
 }
 
-/*
-NonZeroIndicesAtRow returns a slice with all non-zero elements indices for the given row.
-*/
+// NonZeroIndicesAtRow returns a slice with all non-zero elements indices for the given row.
 func (m SparseMat) NonZeroIndicesAtRow(row int) []int {
 	if dataRow, hasRow := m.data[row]; hasRow {
 		var (
@@ -176,11 +130,7 @@ func (m SparseMat) NonZeroIndicesAtRow(row int) []int {
 	return []int{}
 }
 
-/* <-- Operations --> */
-
-/*
-TimesVector multiplies this matrix and a vector.
-*/
+// TimesVector multiplies this matrix and a vector.
 func (m SparseMat) TimesVector(vector *vec.Vector) *vec.Vector {
 	if m.Cols() != vector.Length() {
 		panic("Can't multiply matrix and vector due to size mismatch")
@@ -204,9 +154,7 @@ func (m SparseMat) TimesVector(vector *vec.Vector) *vec.Vector {
 	return result
 }
 
-/*
-TimesMatrix multiplies this matrix times other.
-*/
+// TimesMatrix multiplies this matrix times other.
 func (m SparseMat) TimesMatrix(other ReadOnlyMatrix) ReadOnlyMatrix {
 	if m.Cols() != other.Rows() {
 		panic("Can't multiply matrices due to size mismatch")
@@ -235,10 +183,7 @@ func (m SparseMat) TimesMatrix(other ReadOnlyMatrix) ReadOnlyMatrix {
 	return result
 }
 
-/*
-RowTimesVector returns the result of multiplying the row at the given index
-times the given vector.
-*/
+// RowTimesVector returns the result of multiplying the row at the given index times the given vector.
 func (m SparseMat) RowTimesVector(row int, vector *vec.Vector) float64 {
 	if m.Cols() != vector.Length() {
 		panic("Can't multiply matrix row with vector due to size mismatch")

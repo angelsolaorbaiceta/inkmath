@@ -1,19 +1,3 @@
-/*
-Copyright 2020 Angel Sola Orbaiceta
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-		http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
 package mat
 
 import (
@@ -24,27 +8,25 @@ import (
 /*
 A DenseMat is an implementation of a dense Matrix.
 
-Dense matrices allocate all the memory required to store every value.
-Every value which hasn't been explecitly set is zero.
+Dense matrices allocate all the memory required to store every value. Every value which hasn't been
+explecitly set is zero.
 */
 type DenseMat struct {
 	rows, cols int
 	data       [][]float64
 }
 
-/* <-- Construction --> */
-
 /*
-MakeSquareDense creates a new dense matrix (strores zeroes) with the given dimension
-all filled with zeroes.
+MakeSquareDense creates a new dense matrix (strores zeroes) with the given dimension all filled
+with zeroes.
 */
 func MakeSquareDense(size int) *DenseMat {
 	return MakeDense(size, size)
 }
 
 /*
-MakeDense creates a new dense matrix (stores zeroes) with the given rows and columns
-filled with zeroes.
+MakeDense creates a new dense matrix (stores zeroes) with the given rows and columns filled
+with zeroes.
 */
 func MakeDense(rows, cols int) *DenseMat {
 	data := make([][]float64, rows)
@@ -55,9 +37,7 @@ func MakeDense(rows, cols int) *DenseMat {
 	return &DenseMat{rows, cols, data}
 }
 
-/*
-MakeDenseWithData creates a new matrix initialized with the given data.
-*/
+// MakeDenseWithData creates a new matrix initialized with the given data.
 func MakeDenseWithData(rows, cols int, data []float64) *DenseMat {
 	matrix := MakeDense(rows, cols)
 	FillMatrixWithData(matrix, data)
@@ -65,44 +45,28 @@ func MakeDenseWithData(rows, cols int, data []float64) *DenseMat {
 	return matrix
 }
 
-/* <-- Properties --> */
-
-/*
-Rows returns the number of rows in the matrix.
-*/
+// Rows returns the number of rows in the matrix.
 func (m DenseMat) Rows() int { return m.rows }
 
-/*
-Cols returns the number of columns in the matrix.
-*/
+// Cols returns the number of columns in the matrix.
 func (m DenseMat) Cols() int { return m.cols }
 
-/* <-- Methods --> */
-
-/*
-Value returns the value at a given row and column.
-*/
+// Value returns the value at a given row and column.
 func (m DenseMat) Value(row, col int) float64 {
 	return m.data[row][col]
 }
 
-/*
-SetValue sets a value for a given row and column.
-*/
+// SetValue sets a value for a given row and column.
 func (m *DenseMat) SetValue(row, col int, value float64) {
 	m.data[row][col] = value
 }
 
-/*
-AddToValue adds the given value to the existing value in the indicated row and column.
-*/
+// AddToValue adds the given value to the existing value in the indicated row and column.
 func (m *DenseMat) AddToValue(row, col int, value float64) {
 	m.data[row][col] += value
 }
 
-/*
-SetZeroCol sets all the values in the given column as zero.
-*/
+// SetZeroCol sets all the values in the given column as zero.
 func (m *DenseMat) SetZeroCol(col int) {
 	for row := 0; row < m.rows; row++ {
 		m.data[row][col] = 0.0
@@ -110,8 +74,8 @@ func (m *DenseMat) SetZeroCol(col int) {
 }
 
 /*
-SetIdentityRow sets the given row as identity: one in the main diagonal value,
-and zeroes in all other positions of the row.
+SetIdentityRow sets the given row as identity: one in the main diagonal value, and zeroes in all
+other positions of the row.
 */
 func (m *DenseMat) SetIdentityRow(row int) {
 	for col := 0; col < m.cols; col++ {
@@ -120,9 +84,7 @@ func (m *DenseMat) SetIdentityRow(row int) {
 	m.data[row][row] = 1.0
 }
 
-/*
-NonZeroIndicesAtRow returns a slice with all non-zero elements indices for the given row.
-*/
+// NonZeroIndicesAtRow returns a slice with all non-zero elements indices for the given row.
 func (m DenseMat) NonZeroIndicesAtRow(row int) []int {
 	indices := make([]int, 0)
 	for i, val := range m.data[row] {
@@ -134,11 +96,7 @@ func (m DenseMat) NonZeroIndicesAtRow(row int) []int {
 	return indices
 }
 
-/* <-- Operations --> */
-
-/*
-TimesVector creates a new vector result of multiplying this matrix and a vector.
-*/
+// TimesVector creates a new vector result of multiplying this matrix and a vector.
 func (m DenseMat) TimesVector(v *vec.Vector) *vec.Vector {
 	if m.Cols() != v.Length() {
 		panic("Can't multiply matrix vs vector due to size mismatch")
@@ -162,9 +120,7 @@ func (m DenseMat) TimesVector(v *vec.Vector) *vec.Vector {
 	return result
 }
 
-/*
-TimesMatrix multiplies this matrix with other.
-*/
+// TimesMatrix multiplies this matrix with other.
 func (m DenseMat) TimesMatrix(other ReadOnlyMatrix) ReadOnlyMatrix {
 	if m.Cols() != other.Rows() {
 		panic("Can't multiply matrices due to size mismatch")
@@ -192,10 +148,7 @@ func (m DenseMat) TimesMatrix(other ReadOnlyMatrix) ReadOnlyMatrix {
 	return result
 }
 
-/*
-RowTimesVector returns the result of multiplying the row at the given index
-times the given vector.
-*/
+// RowTimesVector returns the result of multiplying the row at the given index times the given vector.
 func (m DenseMat) RowTimesVector(row int, v *vec.Vector) float64 {
 	if m.Cols() != v.Length() {
 		panic("Can't multiply matrix row with vector due to size mismatch")

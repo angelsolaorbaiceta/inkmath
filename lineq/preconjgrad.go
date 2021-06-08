@@ -1,19 +1,3 @@
-/*
-Copyright 2020 Angel Sola Orbaiceta
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-		http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
 package lineq
 
 import (
@@ -24,8 +8,8 @@ import (
 )
 
 /*
-PreconditionedConjugateGradientSolver is an interative solver for linear equation
-resolution where a preconditioner is used to speed up convergence.
+PreconditionedConjugateGradientSolver is an interative solver for linear equation resolution where
+a preconditioner is used to speed up convergence.
 
 The preconditioner should be a square matrix.
 */
@@ -34,16 +18,13 @@ type PreconditionedConjugateGradientSolver struct {
 	MaxIter  int
 }
 
-/* <-- Methods : Solver --> */
-
 /*
-CanSolve returns whether Conjugate Gradient is suitable for solving the given
-system of equations.
+CanSolve returns whether Conjugate Gradient is suitable for solving the given system of equations.
 
 The conditions required are:
-    - System matrix is square
-		- System matrix is symmetric
-    - System matrix and vector have same size
+	- System matrix is square
+	- System matrix is symmetric
+	- System matrix and vector have same size
 */
 func (solver PreconditionedConjugateGradientSolver) CanSolve(
 	m mat.ReadOnlyMatrix,
