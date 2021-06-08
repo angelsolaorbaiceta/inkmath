@@ -136,19 +136,9 @@ func (m SparseMat) TimesVector(vector *vec.Vector) *vec.Vector {
 		panic("Can't multiply matrix and vector due to size mismatch")
 	}
 
-	var (
-		result = vec.Make(m.rows)
-		sum    float64
-	)
-
-	for rowIndex, row := range m.data {
-		sum = 0.0
-
-		for colIndex, matrixValue := range row {
-			sum += matrixValue * vector.Value(colIndex)
-		}
-
-		result.SetValue(rowIndex, sum)
+	result := vec.Make(m.rows)
+	for rowIndex := range m.data {
+		result.SetValue(rowIndex, m.rowTimesVector(rowIndex, vector))
 	}
 
 	return result
@@ -189,6 +179,10 @@ func (m SparseMat) RowTimesVector(row int, vector *vec.Vector) float64 {
 		panic("Can't multiply matrix row with vector due to size mismatch")
 	}
 
+	return m.rowTimesVector(row, vector)
+}
+
+func (m SparseMat) rowTimesVector(row int, vector *vec.Vector) float64 {
 	if rowData, hasRow := m.data[row]; hasRow {
 		result := 0.0
 
