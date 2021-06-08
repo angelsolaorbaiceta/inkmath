@@ -132,14 +132,24 @@ func (m SparseMat) NonZeroIndicesAtRow(row int) []int {
 
 // TimesVector multiplies this matrix and a vector.
 func (m SparseMat) TimesVector(vector *vec.Vector) *vec.Vector {
-	if m.Cols() != vector.Length() {
+	if m.cols != vector.Length() {
 		panic("Can't multiply matrix and vector due to size mismatch")
 	}
 
-	result := vec.Make(m.rows)
+	var (
+		result = vec.Make(m.rows)
+		ch     = make(chan vectMultResult)
+	)
+
 	for rowIndex := range m.data {
-		result.SetValue(rowIndex, m.rowTimesVector(rowIndex, vector))
+		go m.rowTimesVectorRoutine(rowIndex, vector, ch)
 	}
+
+	for j := 0; j < m.rows; j++ {
+		multResult := <-ch
+		result.SetValue(multResult.index, multResult.value)
+	}
+	close(ch)
 
 	return result
 }
@@ -194,4 +204,14 @@ func (m SparseMat) rowTimesVector(row int, vector *vec.Vector) float64 {
 	}
 
 	return 0.0
+}
+
+type vectMultResult struct {
+	index int
+	value float64
+}
+
+func (m SparseMat) rowTimesVectorRoutine(row int, vector *vec.Vector, ch chan<- vectMultResult) {
+	result := vectMultResult{index: row, value: m.rowTimesVector(row, vector)}
+	ch <- result
 }
