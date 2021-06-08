@@ -136,32 +136,23 @@ func (m SparseMat) TimesVector(vector *vec.Vector) *vec.Vector {
 		panic("Can't multiply matrix and vector due to size mismatch")
 	}
 
-	var (
-		result = vec.Make(m.rows)
-		ch     = make(chan vectMultResult)
-	)
+	result := vec.Make(m.rows)
 
 	for rowIndex := range m.data {
-		go m.rowTimesVectorRoutine(rowIndex, vector, ch)
+		result.SetValue(rowIndex, m.rowTimesVector(rowIndex, vector))
 	}
-
-	for j := 0; j < m.rows; j++ {
-		multResult := <-ch
-		result.SetValue(multResult.index, multResult.value)
-	}
-	close(ch)
 
 	return result
 }
 
 // TimesMatrix multiplies this matrix times other.
 func (m SparseMat) TimesMatrix(other ReadOnlyMatrix) ReadOnlyMatrix {
-	if m.Cols() != other.Rows() {
+	if m.cols != other.Rows() {
 		panic("Can't multiply matrices due to size mismatch")
 	}
 
 	var (
-		rows   = m.Rows()
+		rows   = m.rows
 		cols   = other.Cols()
 		sum    float64
 		result = MakeSparse(rows, cols)
@@ -185,7 +176,7 @@ func (m SparseMat) TimesMatrix(other ReadOnlyMatrix) ReadOnlyMatrix {
 
 // RowTimesVector returns the result of multiplying the row at the given index times the given vector.
 func (m SparseMat) RowTimesVector(row int, vector *vec.Vector) float64 {
-	if m.Cols() != vector.Length() {
+	if m.cols != vector.Length() {
 		panic("Can't multiply matrix row with vector due to size mismatch")
 	}
 
@@ -204,14 +195,4 @@ func (m SparseMat) rowTimesVector(row int, vector *vec.Vector) float64 {
 	}
 
 	return 0.0
-}
-
-type vectMultResult struct {
-	index int
-	value float64
-}
-
-func (m SparseMat) rowTimesVectorRoutine(row int, vector *vec.Vector, ch chan<- vectMultResult) {
-	result := vectMultResult{index: row, value: m.rowTimesVector(row, vector)}
-	ch <- result
 }
