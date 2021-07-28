@@ -6,30 +6,28 @@ import (
 	"github.com/angelsolaorbaiceta/inkmath/nums"
 )
 
+type ReadOnlyVector interface {
+	/* Properties */
+	Length() int
+	Norm() float64
+
+	/* Methods */
+	Value(i int) float64
+	Opposite() ReadOnlyVector
+	Scaled(factor float64) ReadOnlyVector
+	Plus(other *Vector) ReadOnlyVector
+	Minus(other *Vector) ReadOnlyVector
+	Times(other *Vector) float64
+
+	Clone() ReadOnlyVector
+	Equals(other ReadOnlyVector) bool
+}
+
 // Vector is an array of values.
 type Vector struct {
 	length int
 	data   []float64
 }
-
-/* <-- Construction --> */
-
-// Make returns a vector with the given size all filled with zeroes.
-func Make(size int) *Vector {
-	return &Vector{size, make([]float64, size)}
-}
-
-// MakeWithValues returns a vector with the given values.
-func MakeWithValues(vals []float64) *Vector {
-	v := Make(len(vals))
-	for i := 0; i < len(vals); i++ {
-		v.data[i] = vals[i]
-	}
-
-	return v
-}
-
-/* <-- Properties --> */
 
 // Length is the size of the vector.
 func (v Vector) Length() int {
@@ -46,48 +44,9 @@ func (v Vector) Norm() float64 {
 	return math.Sqrt(norm)
 }
 
-/* <-- Methods --> */
-
-// SetValue sets the given value at the given index.
-func (v *Vector) SetValue(i int, value float64) {
-	v.data[i] = value
-}
-
-// SetZero sets a zero value in the given index.
-func (v *Vector) SetZero(i int) {
-	v.data[i] = 0.0
-}
-
 // Value returns the value at the given index.
 func (v Vector) Value(i int) float64 {
 	return v.data[i]
-}
-
-// Equals compares two vectors and returns true if they contain the same elements.
-func (v Vector) Equals(other *Vector) bool {
-	if v.length != other.length {
-		return false
-	}
-
-	for i := 0; i < v.length; i++ {
-		if !nums.FuzzyEqual(v.data[i], other.data[i]) {
-			return false
-		}
-	}
-
-	return true
-}
-
-/*
-Clone creates an exact copy of the vector.
-*/
-func (v Vector) Clone() *Vector {
-	vec := Make(v.Length())
-	for i, val := range v.data {
-		vec.data[i] = val
-	}
-
-	return vec
 }
 
 /*
@@ -114,8 +73,6 @@ func (v Vector) Scaled(factor float64) *Vector {
 
 	return scaled
 }
-
-/* <-- Operations --> */
 
 // Plus adds two vectors.
 func (v Vector) Plus(other *Vector) *Vector {
@@ -156,4 +113,31 @@ func (v Vector) Times(other *Vector) float64 {
 	}
 
 	return result
+}
+
+// Equals compares two vectors and returns true if they contain the same elements.
+func (v Vector) Equals(other *Vector) bool {
+	if v.length != other.length {
+		return false
+	}
+
+	for i := 0; i < v.length; i++ {
+		if !nums.FuzzyEqual(v.data[i], other.data[i]) {
+			return false
+		}
+	}
+
+	return true
+}
+
+/*
+Clone creates an exact copy of the vector.
+*/
+func (v Vector) Clone() *Vector {
+	vec := Make(v.Length())
+	for i, val := range v.data {
+		vec.data[i] = val
+	}
+
+	return vec
 }
