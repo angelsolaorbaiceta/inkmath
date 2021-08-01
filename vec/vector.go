@@ -6,6 +6,7 @@ import (
 	"github.com/angelsolaorbaiceta/inkmath/nums"
 )
 
+// A ReadOnlyVector is a Vector whose operations never mutate the internal state.
 type ReadOnlyVector interface {
 	/* Properties */
 	Length() int
@@ -15,15 +16,16 @@ type ReadOnlyVector interface {
 	Value(i int) float64
 	Opposite() ReadOnlyVector
 	Scaled(factor float64) ReadOnlyVector
-	Plus(other *Vector) ReadOnlyVector
-	Minus(other *Vector) ReadOnlyVector
-	Times(other *Vector) float64
+	Plus(other ReadOnlyVector) ReadOnlyVector
+	Minus(other ReadOnlyVector) ReadOnlyVector
+	Times(other ReadOnlyVector) float64
 
 	Clone() ReadOnlyVector
 	Equals(other ReadOnlyVector) bool
+	AsMutable() MutableVector
 }
 
-// Vector is an array of values.
+// Vector is a one-dimension array of float64 values.
 type Vector struct {
 	length int
 	data   []float64
@@ -53,8 +55,8 @@ func (v Vector) Value(i int) float64 {
 Opposite creates a new vector which is the opposite of this one, that is,
 points in the opposite direction.
 */
-func (v Vector) Opposite() *Vector {
-	opposite := Make(v.Length())
+func (v Vector) Opposite() ReadOnlyVector {
+	opposite := makeVector(v.length)
 	for i, val := range v.data {
 		opposite.data[i] = -val
 	}
@@ -65,8 +67,8 @@ func (v Vector) Opposite() *Vector {
 /*
 Scaled creates a new vector consisting on the scaled projections of this vector.
 */
-func (v Vector) Scaled(factor float64) *Vector {
-	scaled := Make(v.Length())
+func (v Vector) Scaled(factor float64) ReadOnlyVector {
+	scaled := makeVector(v.length)
 	for i, val := range v.data {
 		scaled.data[i] = val * factor
 	}
@@ -75,54 +77,54 @@ func (v Vector) Scaled(factor float64) *Vector {
 }
 
 // Plus adds two vectors.
-func (v Vector) Plus(other *Vector) *Vector {
+func (v Vector) Plus(other ReadOnlyVector) ReadOnlyVector {
 	return operateWithVectors(&v, other, func(a float64, b float64) float64 {
 		return a + b
 	})
 }
 
 // Minus subtracts two vectors.
-func (v Vector) Minus(other *Vector) *Vector {
+func (v Vector) Minus(other ReadOnlyVector) ReadOnlyVector {
 	return operateWithVectors(&v, other, func(a float64, b float64) float64 {
 		return a - b
 	})
 }
 
-func operateWithVectors(u, v *Vector, operation func(float64, float64) float64) *Vector {
-	if u.length != v.length {
+func operateWithVectors(u, v ReadOnlyVector, operation func(float64, float64) float64) *Vector {
+	if u.Length() != v.Length() {
 		panic("Cannot operate with vectors of different sizes")
 	}
 
-	result := Make(u.length)
-	for i := 0; i < u.length; i++ {
-		result.data[i] = operation(u.data[i], v.data[i])
+	result := makeVector(u.Length())
+	for i := 0; i < u.Length(); i++ {
+		result.data[i] = operation(u.Value(i), v.Value(i))
 	}
 
 	return result
 }
 
 // Times multiplies two vectors as v' · other.
-func (v Vector) Times(other *Vector) float64 {
-	if v.length != other.length {
+func (v Vector) Times(other ReadOnlyVector) float64 {
+	if v.length != other.Length() {
 		panic("Cannot operate with vectors of different sizes")
 	}
 
 	result := 0.0
 	for i := 0; i < v.length; i++ {
-		result += v.data[i] * other.data[i]
+		result += v.data[i] * other.Value(i)
 	}
 
 	return result
 }
 
 // Equals compares two vectors and returns true if they contain the same elements.
-func (v Vector) Equals(other *Vector) bool {
-	if v.length != other.length {
+func (v Vector) Equals(other ReadOnlyVector) bool {
+	if v.length != other.Length() {
 		return false
 	}
 
 	for i := 0; i < v.length; i++ {
-		if !nums.FuzzyEqual(v.data[i], other.data[i]) {
+		if !nums.FuzzyEqual(v.data[i], other.Value(i)) {
 			return false
 		}
 	}
@@ -130,14 +132,17 @@ func (v Vector) Equals(other *Vector) bool {
 	return true
 }
 
-/*
-Clone creates an exact copy of the vector.
-*/
-func (v Vector) Clone() *Vector {
-	vec := Make(v.Length())
+// Clone creates an exact copy of the vector.
+func (v Vector) Clone() ReadOnlyVector {
+	vec := makeVector(v.length)
 	for i, val := range v.data {
 		vec.data[i] = val
 	}
 
 	return vec
+}
+
+// As Mutable returns this vector typed as a mutable one.
+func (v Vector) AsMutable() MutableVector {
+	return &v
 }

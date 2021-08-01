@@ -1,7 +1,6 @@
 package mat
 
 import (
-	"github.com/angelsolaorbaiceta/inkmath/nums"
 	"github.com/angelsolaorbaiceta/inkmath/vec"
 )
 
@@ -53,22 +52,6 @@ func (m SparseMat) Rows() int { return m.rows }
 // Cols returns the number of columns in the matrix.
 func (m SparseMat) Cols() int { return m.cols }
 
-// SetZeroCol sets all the values in the given column as zero.
-func (m *SparseMat) SetZeroCol(col int) {
-	for i := range m.data {
-		m.SetValue(i, col, 0.0)
-	}
-}
-
-/*
-SetIdentityRow sets the given row as identity: one in the main diagonal value, and zeroes in all
-other positions of the row.
-*/
-func (m *SparseMat) SetIdentityRow(row int) {
-	delete(m.data, row)
-	m.SetValue(row, row, 1.0)
-}
-
 // Value returns the value at a given row and column.
 func (m SparseMat) Value(row, col int) float64 {
 	if dataRow, hasRow := m.data[row]; hasRow {
@@ -78,37 +61,6 @@ func (m SparseMat) Value(row, col int) float64 {
 	}
 
 	return 0.0
-}
-
-// SetValue sets a value for a given row and column.
-func (m *SparseMat) SetValue(row, col int, value float64) {
-	if nums.IsCloseToZero(value) {
-		m.removeValueAt(row, col)
-	} else {
-		m.setValueToAdd(row, col, value)
-	}
-}
-
-func (m *SparseMat) setValueToAdd(row, col int, value float64) {
-	if _, ok := m.data[row]; !ok {
-		m.data[row] = make(map[int]float64)
-	}
-	m.data[row][col] = value
-}
-
-func (m *SparseMat) removeValueAt(row, col int) {
-	if dataRow, hasRow := m.data[row]; hasRow {
-		delete(dataRow, col)
-	}
-}
-
-// AddToValue adds the given value to the existing value in the indicated row and column.
-func (m *SparseMat) AddToValue(row, col int, value float64) {
-	if dataRow, hasRow := m.data[row]; hasRow {
-		dataRow[col] += value
-	} else {
-		m.SetValue(row, col, value)
-	}
 }
 
 // NonZeroIndicesAtRow returns a slice with all non-zero elements indices for the given row.
@@ -131,7 +83,7 @@ func (m SparseMat) NonZeroIndicesAtRow(row int) []int {
 }
 
 // TimesVector multiplies this matrix and a vector.
-func (m SparseMat) TimesVector(vector *vec.Vector) *vec.Vector {
+func (m SparseMat) TimesVector(vector vec.ReadOnlyVector) vec.ReadOnlyVector {
 	if m.cols != vector.Length() {
 		panic("Can't multiply matrix and vector due to size mismatch")
 	}
@@ -175,7 +127,7 @@ func (m SparseMat) TimesMatrix(other ReadOnlyMatrix) ReadOnlyMatrix {
 }
 
 // RowTimesVector returns the result of multiplying the row at the given index times the given vector.
-func (m SparseMat) RowTimesVector(row int, vector *vec.Vector) float64 {
+func (m SparseMat) RowTimesVector(row int, vector vec.ReadOnlyVector) float64 {
 	if m.cols != vector.Length() {
 		panic("Can't multiply matrix row with vector due to size mismatch")
 	}
@@ -183,7 +135,7 @@ func (m SparseMat) RowTimesVector(row int, vector *vec.Vector) float64 {
 	return m.rowTimesVector(row, vector)
 }
 
-func (m SparseMat) rowTimesVector(row int, vector *vec.Vector) float64 {
+func (m SparseMat) rowTimesVector(row int, vector vec.ReadOnlyVector) float64 {
 	if rowData, hasRow := m.data[row]; hasRow {
 		result := 0.0
 

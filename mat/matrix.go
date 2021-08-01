@@ -19,8 +19,8 @@ type ReadOnlyMatrix interface {
 	Value(int, int) float64
 
 	/* Operations */
-	RowTimesVector(row int, v *vec.Vector) float64
-	TimesVector(v *vec.Vector) *vec.Vector
+	RowTimesVector(row int, v vec.ReadOnlyVector) float64
+	TimesVector(v vec.ReadOnlyVector) vec.ReadOnlyVector
 	TimesMatrix(other ReadOnlyMatrix) ReadOnlyMatrix
 }
 

@@ -5,8 +5,8 @@ import (
 	"github.com/angelsolaorbaiceta/inkmath/vec"
 )
 
-// A Solver is a solver for linear systems of equations.
+// A Solver is an implementation of a method for solving linear systems of equations.
 type Solver interface {
-	CanSolve(m mat.ReadOnlyMatrix, v *vec.Vector) bool
-	Solve(m mat.ReadOnlyMatrix, v *vec.Vector) *Solution
+	CanSolve(coefficients mat.ReadOnlyMatrix, freeTerms vec.ReadOnlyVector) bool
+	Solve(coefficients mat.ReadOnlyMatrix, freeTerms vec.ReadOnlyVector) *Solution
 }

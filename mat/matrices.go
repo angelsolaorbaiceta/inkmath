@@ -97,7 +97,7 @@ func HasZeroInMainDiagonal(m ReadOnlyMatrix) bool {
 /*
 MainDiagonal returns a vector containing the values of the main diagonal.
 */
-func MainDiagonal(m ReadOnlyMatrix) *vec.Vector {
+func MainDiagonal(m ReadOnlyMatrix) vec.ReadOnlyVector {
 	if !IsSquare(m) {
 		panic("Matrix main diagonal only applies to square matrices")
 	}

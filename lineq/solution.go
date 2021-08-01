@@ -11,10 +11,10 @@ type Solution struct {
 	ReachedMaxIter bool
 	MinError       float64
 	IterCount      int
-	Solution       *vec.Vector
+	Solution       vec.ReadOnlyVector
 }
 
-func makeSolution(iterCount int, minError float64, solution *vec.Vector) *Solution {
+func makeSolution(iterCount int, minError float64, solution vec.ReadOnlyVector) *Solution {
 	return &Solution{
 		ReachedMaxIter: false,
 		MinError:       minError,
@@ -26,7 +26,7 @@ func makeSolution(iterCount int, minError float64, solution *vec.Vector) *Soluti
 func makeErrorSolution(
 	iterCount int,
 	minError float64,
-	partialSolution *vec.Vector,
+	partialSolution vec.ReadOnlyVector,
 ) *Solution {
 	return &Solution{
 		ReachedMaxIter: true,

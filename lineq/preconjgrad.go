@@ -27,12 +27,12 @@ The conditions required are:
 	- System matrix and vector have same size
 */
 func (solver PreconditionedConjugateGradientSolver) CanSolve(
-	m mat.ReadOnlyMatrix,
-	v *vec.Vector,
+	coefficients mat.ReadOnlyMatrix,
+	freeTerms vec.ReadOnlyVector,
 ) bool {
-	return mat.IsSquare(m) &&
-		m.Rows() == v.Length() &&
-		mat.IsSymmetric(m)
+	return mat.IsSquare(coefficients) &&
+		coefficients.Rows() == freeTerms.Length() &&
+		mat.IsSymmetric(coefficients)
 }
 
 /*
@@ -41,13 +41,13 @@ solution is found or the maximum number of iterations reached.
 */
 func (solver PreconditionedConjugateGradientSolver) Solve(
 	a mat.ReadOnlyMatrix,
-	b *vec.Vector,
+	b vec.ReadOnlyVector,
 ) *Solution {
 	var (
 		size                      = b.Length()
-		x                         = vec.Make(size)
+		x                         = vec.MakeReadOnly(size)
 		precond                   = computePreconditioner(a)
-		r, oldr, p, precondTimesR *vec.Vector
+		r, oldr, p, precondTimesR vec.ReadOnlyVector
 		alpha, beta, err          float64
 		iter                      int
 	)
