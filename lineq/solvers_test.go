@@ -22,7 +22,11 @@ func TestCGSolveSystem2x2(t *testing.T) {
 func TestPreconditionedWithIdentityCGSolveSystem2x2(t *testing.T) {
 	var (
 		m, v   = makeSystem2x2()
-		solver = PreconditionedConjugateGradientSolver{1e-10, 2}
+		solver = PreconditionedConjugateGradientSolver{
+			1e-10,
+			2,
+			mat.MakeDenseWithData(2, 2, []float64{1.0 / 4.0, 0, 0, 1.0 / 3.0}),
+		}
 	)
 
 	if sol := solver.Solve(m, v); !sol.Solution.Equals(expectedSol2x2) {

@@ -14,8 +14,9 @@ a preconditioner is used to speed up convergence.
 The preconditioner should be a square matrix.
 */
 type PreconditionedConjugateGradientSolver struct {
-	MaxError float64
-	MaxIter  int
+	MaxError       float64
+	MaxIter        int
+	Preconditioner mat.ReadOnlyMatrix
 }
 
 /*
@@ -46,7 +47,7 @@ func (solver PreconditionedConjugateGradientSolver) Solve(
 	var (
 		size                      = b.Length()
 		x                         = vec.MakeReadOnly(size)
-		precond                   = computePreconditioner(a)
+		precond                   = solver.Preconditioner
 		r, oldr, p, precondTimesR vec.ReadOnlyVector
 		alpha, beta, err          float64
 		iter                      int
@@ -82,13 +83,4 @@ func (solver PreconditionedConjugateGradientSolver) Solve(
 	}
 
 	return makeErrorSolution(iter, err, x)
-}
-
-func computePreconditioner(m mat.ReadOnlyMatrix) mat.ReadOnlyMatrix {
-	precond := mat.MakeSparse(m.Rows(), m.Cols())
-	for i := 0; i < m.Rows(); i++ {
-		precond.SetValue(i, i, 1.0/m.Value(i, i))
-	}
-
-	return precond
 }
