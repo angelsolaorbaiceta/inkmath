@@ -227,3 +227,35 @@ Represents a dense matrix, where every value (including zeroes) are stored.
 The `DenseMat` struct implementation satisfies both the `ReadOnlyMatrix` and `MutableMatrix` interfaces.
 
 ## Linear Equation Solvers
+
+`InkMath` contains one interface defining the contract for all the linear equation solver implementations: `Solver`:
+
+```go
+type Solver interface {
+	CanSolve(coefficients mat.ReadOnlyMatrix, freeTerms vec.ReadOnlyVector) bool
+	Solve(coefficients mat.ReadOnlyMatrix, freeTerms vec.ReadOnlyVector) *Solution
+}
+```
+
+This interface has two methods:
+
+- `CanSolve` to test whether a given set of linear equations can be solved by the current method
+- `Solve` to solve the system and produce a solution
+
+The returned `Solution` instance is defined as follows:
+
+```go
+type Solution struct {
+	ReachedMaxIter bool
+	MinError       float64
+	IterCount      int
+	Solution       vec.ReadOnlyVector
+}
+```
+
+where:
+
+- `ReachedMaxIter` is a flag that indicates, in the case of iterative methods, whether the maximum number of iterations was reached before a good enough solution could be found
+- `MinError` a bound of the estimated error of the solution, which can be made as small as required
+- `IterCount` the number of iterations necessary to find a solution
+- `Solution` the solution vector
