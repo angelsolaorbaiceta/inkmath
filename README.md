@@ -171,4 +171,59 @@ The length of the vector will be `len(vals)`.
 
 ## Matrices
 
+A matrix is a bi-dimensional array of floating point numbers.
+There are two matrix implementations (sparse and dense), and two interfaces to use matrices.
+The two interfaces, following the same approach as with the vectors are:
+
+### `ReadOnlyMatrix`
+
+Represents a matrix which operations don't allow the mutation of its data.
+The interface is defined as follows:
+
+```go
+type ReadOnlyMatrix interface {
+	Rows() int
+	Cols() int
+	NonZeroIndicesAtRow(int) []int
+
+	Value(int, int) float64
+
+	RowTimesVector(row int, v vec.ReadOnlyVector) float64
+	TimesVector(v vec.ReadOnlyVector) vec.ReadOnlyVector
+	TimesMatrix(other ReadOnlyMatrix) ReadOnlyMatrix
+}
+```
+
+### `MutableMatrix`
+
+Represents a matrix that, appart from the methods in a read-only matrix, has operations to mutate its data.
+The interface is defined as follows:
+
+```go
+type MutableMatrix interface {
+	ReadOnlyMatrix
+
+	SetValue(int, int, float64)
+	AddToValue(int, int, float64)
+
+	SetZeroCol(int)
+	SetIdentityRow(int)
+}
+```
+
+---
+
+As mentioned above, there are two different implementations for a matrix: dense and sparse.
+The sparse matrix only stores those values that are different from zero, thus reducing the memory footprint in case of large matrices containing lots of zeros.
+
+### `SparseMat`
+
+Represents a sparse matrix, where only non-zero values are stored.
+The `SparseMat` struct implementation satisfies both the `ReadOnlyMatrix` and `MutableMatrix` interfaces.
+
+### `DenseMat`
+
+Represents a dense matrix, where every value (including zeroes) are stored.
+The `DenseMat` struct implementation satisfies both the `ReadOnlyMatrix` and `MutableMatrix` interfaces.
+
 ## Linear Equation Solvers
