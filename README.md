@@ -91,9 +91,83 @@ Returns `true` if the ranges `[oneStart, oneEnd]` and `[twoStart, twoEnd]` overl
 func RangesOverlap(oneStart, oneEnd, twoStart, twoEnd float64,) (ok bool, start, end float64)
 ```
 
-If the ranges `[oneStart, oneEnd]` and `[twoStart, twoEnd]` overlap, returns `ok = true` and the overlap as a new range: `[start, end]`. In case there is no overlap, `ok = false`.
+If the ranges `[oneStart, oneEnd]` and `[twoStart, twoEnd]` overlap, returns `ok = true` and the overlap as a new range: `[start, end]`.
+In case there is no overlap, `ok = false`.
 
 ## Vectors
+
+A vector is a linear array of floating point numbers.
+There is a single `Vector` struct implementation, but there are two interfaces to use vectors:
+
+### `ReadOnlyVector`
+
+Represents a vector which operations don't allow the mutation of its data.
+The interface is defined as follows:
+
+```go
+type ReadOnlyVector interface {
+	Length() int
+	Norm() float64
+
+	Value(i int) float64
+	Opposite() ReadOnlyVector
+	Scaled(factor float64) ReadOnlyVector
+	Plus(other ReadOnlyVector) ReadOnlyVector
+	Minus(other ReadOnlyVector) ReadOnlyVector
+	Times(other ReadOnlyVector) float64
+
+	Clone() ReadOnlyVector
+	Equals(other ReadOnlyVector) bool
+	AsMutable() MutableVector
+}
+```
+
+Use a `ReadOnlyVector` as the type of those vector instances which shouldn't mutate their data.
+
+### `MutableVector`
+
+Represents a vector which, appart from the methods present in a `ReadOnlyVector`, allows modifying the vector's data.
+The interface is defined as follows:
+
+```go
+type MutableVector interface {
+	ReadOnlyVector
+
+	SetValue(i int, value float64)
+	SetZero(i int)
+}
+```
+
+Use a `MutableVector` as the type of those vector instances which need to mutate their data.
+
+### Vector Factories
+
+You can create vectors using any of the following functions:
+
+#### `Make`
+
+```go
+func Make(size int) MutableVector
+```
+
+Creates a `MutableVector` instance with the given size and filled with zeroes.
+
+#### `MakeReadOnly`
+
+```go
+func MakeReadOnly(size int) ReadOnlyVector
+```
+
+Creates a `ReadOnlyVector` instance with the given size and filled with zeroes.
+
+#### `MakeWithValues`
+
+```go
+func MakeWithValues(vals []float64) MutableVector
+```
+
+Creates a `MutableVector` with the passed in values (`vals`).
+The length of the vector will be `len(vals)`.
 
 ## Matrices
 
