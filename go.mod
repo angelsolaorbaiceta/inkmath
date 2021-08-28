@@ -1,3 +1,3 @@
 module github.com/angelsolaorbaiceta/inkmath
 
-go 1.15
+go 1.17
