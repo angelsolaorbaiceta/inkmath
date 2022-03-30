@@ -14,7 +14,7 @@ func TestNorm(t *testing.T) {
 		want = math.Sqrt(14.0)
 	)
 
-	if norm := v.Norm(); !nums.FuzzyEqual(norm, want) {
+	if norm := v.Norm(); !nums.FloatsEqual(norm, want) {
 		t.Errorf("Wrong Vector norm. Expected %f, but got %f", want, norm)
 	}
 }
@@ -136,7 +136,7 @@ func TestMultiply(t *testing.T) {
 		want = 11.0
 	)
 
-	if !nums.FuzzyEqual(got, want) {
+	if !nums.FloatsEqual(got, want) {
 		t.Errorf("Expected %f, but got %f", want, got)
 	}
 }

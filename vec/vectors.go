@@ -42,7 +42,7 @@ func VectorContainsData(vector ReadOnlyVector, data []float64) bool {
 	}
 
 	for i := 0; i < vector.Length(); i++ {
-		if !nums.FuzzyEqual(vector.Value(i), data[i]) {
+		if !nums.FloatsEqual(vector.Value(i), data[i]) {
 			return false
 		}
 	}

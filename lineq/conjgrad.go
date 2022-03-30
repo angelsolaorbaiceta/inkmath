@@ -13,14 +13,12 @@ type ConjugateGradientSolver struct {
 	MaxIter  int
 }
 
-/*
-CanSolve returns whether Conjugate Gradient is suitable for solving the given system of equations.
-
-The conditions required are:
-	- System matrix is square
-	- System matrix is symmetric
-	- System matrix and vector have same size
-*/
+// CanSolve returns whether Conjugate Gradient is suitable for solving the given system of equations.
+//
+// The conditions required are:
+// - System matrix is square
+// - System matrix is symmetric
+// - System matrix and vector have same size
 func (solver ConjugateGradientSolver) CanSolve(
 	coefficients mat.ReadOnlyMatrix,
 	freeTerms vec.ReadOnlyVector,
@@ -30,10 +28,8 @@ func (solver ConjugateGradientSolver) CanSolve(
 		mat.IsSymmetric(coefficients)
 }
 
-/*
-Solve solves the system of equations iteratively until a sufficiently good solution is found
-or the maximum number of iterations reached.
-*/
+// Solve solves the system of equations iteratively until a sufficiently good solution is found
+// or the maximum number of iterations reached.
 func (solver ConjugateGradientSolver) Solve(
 	a mat.ReadOnlyMatrix,
 	b vec.ReadOnlyVector,

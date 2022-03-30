@@ -18,7 +18,7 @@ func AreEqual(m1, m2 ReadOnlyMatrix) bool {
 
 	for i := 0; i < m1.Rows(); i++ {
 		for j := 0; j < m1.Cols(); j++ {
-			if !nums.FuzzyEqual(m1.Value(i, j), m2.Value(i, j)) {
+			if !nums.FloatsEqual(m1.Value(i, j), m2.Value(i, j)) {
 				return false
 			}
 		}
@@ -46,7 +46,7 @@ func IsSymmetric(m ReadOnlyMatrix) bool {
 
 	for i := 0; i < m.Rows(); i++ {
 		for j := i + 1; j < m.Cols(); j++ {
-			if !nums.FuzzyEqual(m.Value(i, j), m.Value(j, i)) {
+			if !nums.FloatsEqual(m.Value(i, j), m.Value(j, i)) {
 				return false
 			}
 		}
@@ -134,7 +134,7 @@ func MatrixContainsData(matrix ReadOnlyMatrix, data []float64) bool {
 			got = matrix.Value(rowIndex, colIndex)
 			want = data[offset+colIndex]
 
-			if !nums.FuzzyEqual(got, want) {
+			if !nums.FloatsEqual(got, want) {
 				return false
 			}
 		}

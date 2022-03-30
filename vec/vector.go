@@ -124,7 +124,7 @@ func (v Vector) Equals(other ReadOnlyVector) bool {
 	}
 
 	for i := 0; i < v.length; i++ {
-		if !nums.FuzzyEqual(v.data[i], other.Value(i)) {
+		if !nums.FloatsEqual(v.data[i], other.Value(i)) {
 			return false
 		}
 	}

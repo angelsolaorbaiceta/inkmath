@@ -29,18 +29,18 @@ This module is made of four packages:
 
 Includes number comparison functions:
 
-### `FuzzyEqualEps`
+### `FloatsEqualEps`
 
 ```go
-func FuzzyEqualEps(a, b, epsilon float64) bool
+func FloatsEqualEps(a, b, epsilon float64) bool
 ```
 
 Compares two numbers, `a` and `b`, and returns `true` if both numbers are closer to eachother than the third argument, `epsilon`.
 
-### `FuzzyEqual`
+### `FloatsEqual`
 
 ```go
-func FuzzyEqual(a, b float64) bool
+func FloatsEqual(a, b float64) bool
 ```
 
 Compares two numbers, `a` and `b`, and returns `true` if both numbers are closer to eachother than a default `epsilon` of $1 \times 10^{10}$.

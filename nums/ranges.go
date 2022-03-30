@@ -11,7 +11,7 @@ func IsInsideOpenRange(val, start, end float64) bool {
 
 // DoRangesOverlap returns true if two given ranges (oneStart, oneEnd) and (twoStart, twoEnd) overlap.
 func DoRangesOverlap(oneStart, oneEnd, twoStart, twoEnd float64) bool {
-	if FuzzyEqual(oneStart, twoStart) && FuzzyEqual(oneEnd, twoEnd) {
+	if FloatsEqual(oneStart, twoStart) && FloatsEqual(oneEnd, twoEnd) {
 		return true
 	}
 
