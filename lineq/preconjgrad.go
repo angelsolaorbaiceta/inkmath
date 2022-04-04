@@ -4,29 +4,30 @@ import (
 	"math"
 
 	"github.com/angelsolaorbaiceta/inkmath/mat"
+	"github.com/angelsolaorbaiceta/inkmath/nums"
 	"github.com/angelsolaorbaiceta/inkmath/vec"
 )
 
-/*
-PreconditionedConjugateGradientSolver is an interative solver for linear equation resolution where
-a preconditioner is used to speed up convergence.
-
-The preconditioner should be a square matrix.
-*/
+// PreconditionedConjugateGradientSolver is an interative solver for systems of linear
+// equations where a preconditioner is used to speed up convergence.
+//
+// The preconditioner should be a square matrix.
+//
+// A channel can be added to the solver to receive the progress and the current error.
 type PreconditionedConjugateGradientSolver struct {
 	MaxError       float64
 	MaxIter        int
 	Preconditioner mat.ReadOnlyMatrix
+	ProgressChan   chan<- IterativeSolverProgress
 }
 
-/*
-CanSolve returns whether Conjugate Gradient is suitable for solving the given system of equations.
-
-The conditions required are:
-	- System matrix is square
-	- System matrix is symmetric
-	- System matrix and vector have same size
-*/
+// CanSolve returns whether Conjugate Gradient is suitable for solving the given system
+// of equations.
+//
+// The conditions required are:
+// - System matrix is square
+// - System matrix is symmetric
+// - System matrix and vector have same size
 func (solver PreconditionedConjugateGradientSolver) CanSolve(
 	coefficients mat.ReadOnlyMatrix,
 	freeTerms vec.ReadOnlyVector,
@@ -36,22 +37,27 @@ func (solver PreconditionedConjugateGradientSolver) CanSolve(
 		mat.IsSymmetric(coefficients)
 }
 
-/*
-Solve solves the system of equations iteratively until a sufficiently good
-solution is found or the maximum number of iterations reached.
-*/
+// Solve solves the system of equations iteratively until a sufficiently good
+// solution is found or the maximum number of iterations reached.
 func (solver PreconditionedConjugateGradientSolver) Solve(
 	a mat.ReadOnlyMatrix,
 	b vec.ReadOnlyVector,
 ) *Solution {
 	var (
-		size                      = b.Length()
-		x                         = vec.MakeReadOnly(size)
-		precond                   = solver.Preconditioner
-		r, oldr, p, precondTimesR vec.ReadOnlyVector
-		alpha, beta, err          float64
-		iter                      int
+		size                         = b.Length()
+		x                            = vec.MakeReadOnly(size)
+		precond                      = solver.Preconditioner
+		r, oldr, p, precondTimesR    vec.ReadOnlyVector
+		alpha, beta, err, initialErr float64
+		iter                         int
 	)
+
+	computeMaxError := func() {
+		err = 0.0
+		for i := 0; i < size; i++ {
+			err = math.Max(err, math.Abs(r.Value(i)))
+		}
+	}
 
 	solutionGoodEnough := func() bool {
 		for i := 0; i < size; i++ {
@@ -63,6 +69,24 @@ func (solver PreconditionedConjugateGradientSolver) Solve(
 		return true
 	}
 
+	notifyProgress := func() {
+		if solver.ProgressChan != nil {
+			if iter == 0 {
+				initialErr = err
+			}
+
+			solver.ProgressChan <- IterativeSolverProgress{
+				IterCount:          iter,
+				Error:              err,
+				ProgressPercentage: int(nums.LinInterpol(initialErr, 0, solver.MaxError, 100, err)),
+			}
+		}
+	}
+
+	if solver.ProgressChan != nil {
+		defer close(solver.ProgressChan)
+	}
+
 	// Initial values
 	r = b.Minus(a.TimesVector(x))
 	p = precond.TimesVector(r)
@@ -70,8 +94,12 @@ func (solver PreconditionedConjugateGradientSolver) Solve(
 	// Iteration loop
 	for iter = 0; iter < solver.MaxIter; iter++ {
 		if solutionGoodEnough() {
-			return makeSolution(iter, solver.MaxError, x)
+			computeMaxError()
+			notifyProgress()
+			return makeSolution(iter, err, x)
 		}
+
+		notifyProgress()
 
 		alpha = r.Times(precond.TimesVector(r)) / (p.Times(a.TimesVector(p)))
 		x = x.Plus(p.Scaled(alpha))
@@ -82,5 +110,7 @@ func (solver PreconditionedConjugateGradientSolver) Solve(
 		p = precondTimesR.Plus(p.Scaled(beta))
 	}
 
+	computeMaxError()
+	notifyProgress()
 	return makeErrorSolution(iter, err, x)
 }

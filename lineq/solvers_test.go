@@ -7,30 +7,51 @@ import (
 	"github.com/angelsolaorbaiceta/inkmath/vec"
 )
 
-/* <--------------- System 2x2 ---------------> */
 func TestCGSolveSystem2x2(t *testing.T) {
 	var (
 		m, v   = makeSystem2x2()
 		solver = ConjugateGradientSolver{1e-10, 2}
 	)
 
-	if sol := solver.Solve(m, v); !sol.Solution.Equals(expectedSol2x2) {
+	sol := solver.Solve(m, v)
+
+	if !sol.Solution.Equals(expectedSol2x2) {
 		t.Errorf("Wrong solution, Expected %v, but got %v", expectedSol2x2, sol)
+	}
+	if sol.MinError > 1e-10 {
+		t.Errorf("Wrong error, Expected < 1e-10, but got %f", sol.MinError)
 	}
 }
 
-func TestPreconditionedWithIdentityCGSolveSystem2x2(t *testing.T) {
+func TestPreconditionedCGSolveSystem2x2(t *testing.T) {
 	var (
-		m, v   = makeSystem2x2()
-		solver = PreconditionedConjugateGradientSolver{
-			1e-10,
-			2,
-			mat.MakeDenseWithData(2, 2, []float64{1.0 / 4.0, 0, 0, 1.0 / 3.0}),
+		m, v         = makeSystem2x2()
+		progressChan = make(chan IterativeSolverProgress, 3)
+		solver       = PreconditionedConjugateGradientSolver{
+			MaxError:       1e-10,
+			MaxIter:        2,
+			Preconditioner: mat.MakeDenseWithData(2, 2, []float64{1.0 / 4.0, 0, 0, 1.0 / 3.0}),
+			ProgressChan:   progressChan,
 		}
+		sol = solver.Solve(m, v)
 	)
 
-	if sol := solver.Solve(m, v); !sol.Solution.Equals(expectedSol2x2) {
+	if !sol.Solution.Equals(expectedSol2x2) {
 		t.Errorf("Wrong solution, Expected %v, but got %v", expectedSol2x2, sol)
+	}
+	if sol.MinError > 1e-10 {
+		t.Errorf("Wrong error, Expected < 1e-10, but got %f", sol.MinError)
+	}
+
+	p1, p2, p3 := <-progressChan, <-progressChan, <-progressChan
+	if got := p1.ProgressPercentage; got != 0.0 {
+		t.Error("Want 0\\% progress, but got", got)
+	}
+	if got := p2.ProgressPercentage; got < 50 && got > 70 {
+		t.Error("Want 50-70\\% progress, but got", got)
+	}
+	if got := p3.ProgressPercentage; got != 100.0 {
+		t.Error("Want 100\\% progress, but got", got)
 	}
 }
 

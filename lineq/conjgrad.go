@@ -7,7 +7,7 @@ import (
 	"github.com/angelsolaorbaiceta/inkmath/vec"
 )
 
-// ConjugateGradientSolver is an interative solver for linear equation resolution.
+// ConjugateGradientSolver is an interative solver for systems of linear equations.
 type ConjugateGradientSolver struct {
 	MaxError float64
 	MaxIter  int
@@ -42,6 +42,13 @@ func (solver ConjugateGradientSolver) Solve(
 		iter                int
 	)
 
+	computeMaxError := func() {
+		err = 0.0
+		for i := 0; i < size; i++ {
+			err = math.Max(err, math.Abs(r.Value(i)))
+		}
+	}
+
 	solutionGoodEnough := func() bool {
 		for i := 0; i < size; i++ {
 			if err = math.Abs(r.Value(i)); err > solver.MaxError {
@@ -59,7 +66,8 @@ func (solver ConjugateGradientSolver) Solve(
 	// Iteration loop
 	for iter = 0; iter < solver.MaxIter; iter++ {
 		if solutionGoodEnough() {
-			return makeSolution(iter, solver.MaxError, x)
+			computeMaxError()
+			return makeSolution(iter, err, x)
 		}
 
 		aTimesP = a.TimesVector(p)
@@ -71,5 +79,6 @@ func (solver ConjugateGradientSolver) Solve(
 		p = r.Plus(p.Scaled(beta))
 	}
 
+	computeMaxError()
 	return makeErrorSolution(iter, err, x)
 }
