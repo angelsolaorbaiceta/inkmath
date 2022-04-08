@@ -44,11 +44,11 @@ func TestPreconditionedCGSolveSystem2x2(t *testing.T) {
 	}
 
 	p1, p2, p3 := <-progressChan, <-progressChan, <-progressChan
-	if got := p1.ProgressPercentage; got != 0.0 {
-		t.Error("Want 0\\% progress, but got", got)
+	if got := p1.ProgressPercentage; got != 10 {
+		t.Error("Want 10\\% progress, but got", got)
 	}
-	if got := p2.ProgressPercentage; got < 50 && got > 70 {
-		t.Error("Want 50-70\\% progress, but got", got)
+	if got := p2.ProgressPercentage; got != 10 {
+		t.Error("Want 10\\% progress, but got", got)
 	}
 	if got := p3.ProgressPercentage; got != 100.0 {
 		t.Error("Want 100\\% progress, but got", got)

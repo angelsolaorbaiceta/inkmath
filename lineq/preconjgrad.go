@@ -4,7 +4,6 @@ import (
 	"math"
 
 	"github.com/angelsolaorbaiceta/inkmath/mat"
-	"github.com/angelsolaorbaiceta/inkmath/nums"
 	"github.com/angelsolaorbaiceta/inkmath/vec"
 )
 
@@ -44,12 +43,13 @@ func (solver PreconditionedConjugateGradientSolver) Solve(
 	b vec.ReadOnlyVector,
 ) *Solution {
 	var (
-		size                         = b.Length()
-		x                            = vec.MakeReadOnly(size)
-		precond                      = solver.Preconditioner
-		r, oldr, p, precondTimesR    vec.ReadOnlyVector
-		alpha, beta, err, initialErr float64
-		iter                         int
+		size                      = b.Length()
+		x                         = vec.MakeReadOnly(size)
+		precond                   = solver.Preconditioner
+		r, oldr, p, precondTimesR vec.ReadOnlyVector
+		alpha, beta, err          float64
+		iter                      int
+		maxErrorLog               = math.Log10(solver.MaxError)
 	)
 
 	computeMaxError := func() {
@@ -71,14 +71,11 @@ func (solver PreconditionedConjugateGradientSolver) Solve(
 
 	notifyProgress := func() {
 		if solver.ProgressChan != nil {
-			if iter == 0 {
-				initialErr = err
-			}
 
 			solver.ProgressChan <- IterativeSolverProgress{
 				IterCount:          iter,
 				Error:              err,
-				ProgressPercentage: int(nums.LinInterpol(initialErr, 0, solver.MaxError, 100, err)),
+				ProgressPercentage: int(100.0 / math.Max(1.0, math.Log10(err)-maxErrorLog)),
 			}
 		}
 	}
