@@ -49,7 +49,7 @@ func (solver PreconditionedConjugateGradientSolver) Solve(
 		r, oldr, p, precondTimesR vec.ReadOnlyVector
 		alpha, beta, err          float64
 		iter                      int
-		maxErrorLog               = math.Log10(solver.MaxError)
+		lastProgressPercentage    int = -1
 	)
 
 	computeMaxError := func() {
@@ -70,14 +70,22 @@ func (solver PreconditionedConjugateGradientSolver) Solve(
 	}
 
 	notifyProgress := func() {
-		if solver.ProgressChan != nil {
+		if solver.ProgressChan == nil {
+			return
+		}
+
+		progressPercentage := computeProgressPercentage(solver.MaxError, err)
+
+		if progressPercentage != lastProgressPercentage {
+			lastProgressPercentage = progressPercentage
 
 			solver.ProgressChan <- IterativeSolverProgress{
 				IterCount:          iter,
 				Error:              err,
-				ProgressPercentage: int(100.0 / math.Max(1.0, math.Log10(err)-maxErrorLog)),
+				ProgressPercentage: progressPercentage,
 			}
 		}
+
 	}
 
 	if solver.ProgressChan != nil {
