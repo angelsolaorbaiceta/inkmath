@@ -51,10 +51,8 @@ func (v Vector) Value(i int) float64 {
 	return v.data[i]
 }
 
-/*
-Opposite creates a new vector which is the opposite of this one, that is,
-points in the opposite direction.
-*/
+// Opposite creates a new vector which is the opposite of this one, that is,
+// points in the opposite direction.
 func (v Vector) Opposite() ReadOnlyVector {
 	opposite := makeVector(v.length)
 	for i, val := range v.data {
@@ -64,9 +62,7 @@ func (v Vector) Opposite() ReadOnlyVector {
 	return opposite
 }
 
-/*
-Scaled creates a new vector consisting on the scaled projections of this vector.
-*/
+// Scaled creates a new vector consisting on the scaled projections of this vector.
 func (v Vector) Scaled(factor float64) ReadOnlyVector {
 	scaled := makeVector(v.length)
 	for i, val := range v.data {

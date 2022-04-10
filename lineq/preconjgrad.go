@@ -49,15 +49,8 @@ func (solver PreconditionedConjugateGradientSolver) Solve(
 		r, oldr, p, precondTimesR vec.ReadOnlyVector
 		alpha, beta, err          float64
 		iter                      int
-		lastProgressPercentage    int = -1
+		computeProgressChan       chan computeProgressRequest
 	)
-
-	computeMaxError := func() {
-		err = 0.0
-		for i := 0; i < size; i++ {
-			err = math.Max(err, math.Abs(r.Value(i)))
-		}
-	}
 
 	solutionGoodEnough := func() bool {
 		for i := 0; i < size; i++ {
@@ -70,26 +63,27 @@ func (solver PreconditionedConjugateGradientSolver) Solve(
 	}
 
 	notifyProgress := func() {
-		if solver.ProgressChan == nil {
-			return
-		}
+		if computeProgressChan != nil {
+			errVec, ok := r.(*vec.Vector)
+			if !ok {
+				return
+			}
 
-		progressPercentage := computeProgressPercentage(solver.MaxError, err)
-
-		if progressPercentage != lastProgressPercentage {
-			lastProgressPercentage = progressPercentage
-
-			solver.ProgressChan <- IterativeSolverProgress{
-				IterCount:          iter,
-				Error:              err,
-				ProgressPercentage: progressPercentage,
+			computeProgressChan <- computeProgressRequest{
+				currentErrorFn: func() float64 {
+					return computeMaxError(errVec)
+				},
+				iterCount: iter,
+				maxError:  solver.MaxError,
 			}
 		}
-
 	}
 
 	if solver.ProgressChan != nil {
-		defer close(solver.ProgressChan)
+		computeProgressChan = make(chan computeProgressRequest)
+		go computeProgress(computeProgressChan, solver.ProgressChan)
+
+		defer close(computeProgressChan)
 	}
 
 	// Initial values
@@ -99,9 +93,7 @@ func (solver PreconditionedConjugateGradientSolver) Solve(
 	// Iteration loop
 	for iter = 0; iter < solver.MaxIter; iter++ {
 		if solutionGoodEnough() {
-			computeMaxError()
-			notifyProgress()
-			return makeSolution(iter, err, x)
+			break
 		}
 
 		notifyProgress()
@@ -115,7 +107,16 @@ func (solver PreconditionedConjugateGradientSolver) Solve(
 		p = precondTimesR.Plus(p.Scaled(beta))
 	}
 
-	computeMaxError()
 	notifyProgress()
-	return makeErrorSolution(iter, err, x)
+	return makeErrorSolution(iter, computeMaxError(r), x)
+}
+
+func computeMaxError(errVec vec.ReadOnlyVector) float64 {
+	var err float64
+
+	for i := 0; i < errVec.Length(); i++ {
+		err = math.Max(err, math.Abs(errVec.Value(i)))
+	}
+
+	return err
 }
