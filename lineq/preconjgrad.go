@@ -66,7 +66,7 @@ func (solver PreconditionedConjugateGradientSolver) Solve(
 		if computeProgressChan != nil {
 			errVec, ok := r.(*vec.Vector)
 			if !ok {
-				return
+				panic("r is not a vec.Vector")
 			}
 
 			computeProgressChan <- computeProgressRequest{
