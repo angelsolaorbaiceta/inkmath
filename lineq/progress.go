@@ -40,7 +40,7 @@ func computeProgress(in <-chan computeProgressRequest, out chan<- IterativeSolve
 			progressPercentage = computeProgressPercentage(req.maxError, currentError)
 		)
 
-		if progressPercentage != lastProgressPercentage {
+		if progressPercentage > lastProgressPercentage {
 			lastProgressPercentage = progressPercentage
 
 			out <- IterativeSolverProgress{
