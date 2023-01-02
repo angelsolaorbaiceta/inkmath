@@ -1,20 +1,21 @@
-package mat
+package lineq
 
 import (
 	"math"
 
+	"github.com/angelsolaorbaiceta/inkmath/mat"
 	"github.com/angelsolaorbaiceta/inkmath/nums"
 )
 
 // CholeskyDecomposition computes the Cholesky lower matrix for a square, symmetric matrix.
-func CholeskyDecomposition(m ReadOnlyMatrix) ReadOnlyMatrix {
-	if !IsSquare(m) {
+func CholeskyDecomposition(m mat.ReadOnlyMatrix) mat.ReadOnlyMatrix {
+	if !mat.IsSquare(m) {
 		panic("Cannot use Cholesky factorization in non-square matrices")
 	}
 
 	var (
 		size        = m.Rows()
-		lowerMatrix = MakeSparse(size, size)
+		lowerMatrix = mat.MakeSparse(size, size)
 		sqSum, sum  float64
 	)
 
@@ -38,18 +39,16 @@ func CholeskyDecomposition(m ReadOnlyMatrix) ReadOnlyMatrix {
 	return lowerMatrix
 }
 
-/*
-IncompleteCholeskyDecomposition computes the Incomplete Cholesky lower matrix
-decomposition for the given square and symmetric matrix.
-*/
-func IncompleteCholeskyDecomposition(m ReadOnlyMatrix) ReadOnlyMatrix {
-	if !IsSquare(m) {
+// IncompleteCholeskyDecomposition computes the Incomplete Cholesky lower matrix decomposition
+// for the given square and symmetric matrix.
+func IncompleteCholeskyDecomposition(m mat.ReadOnlyMatrix) mat.ReadOnlyMatrix {
+	if !mat.IsSquare(m) {
 		panic("Cannot use Cholesky factorization in non-square matrices")
 	}
 
 	var (
 		size        = m.Rows()
-		lowerMatrix = MakeSparse(size, size)
+		lowerMatrix = mat.MakeSparse(size, size)
 		sqSum, sum  float64
 	)
 

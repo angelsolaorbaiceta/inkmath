@@ -1,7 +1,9 @@
-package mat
+package lineq
 
 import (
 	"testing"
+
+	"github.com/angelsolaorbaiceta/inkmath/mat"
 )
 
 func TestCholeskyDecomposition(t *testing.T) {
@@ -11,7 +13,7 @@ func TestCholeskyDecomposition(t *testing.T) {
 		cholesky              = CholeskyDecomposition(m)
 	)
 
-	if !AreEqual(cholesky, expectedDecomposition) {
+	if !mat.AreEqual(cholesky, expectedDecomposition) {
 		t.Error("Wrong Cholesky factorization")
 	}
 }
@@ -23,13 +25,13 @@ func TestIncompleteCholeskyDecomposition(t *testing.T) {
 		cholesky              = IncompleteCholeskyDecomposition(m)
 	)
 
-	if !AreEqual(cholesky, expectedDecomposition) {
+	if !mat.AreEqual(cholesky, expectedDecomposition) {
 		t.Error("Wrong Cholesky factorization")
 	}
 }
 
-func makeCholeskyMatrix() ReadOnlyMatrix {
-	m := MakeSparse(4, 4)
+func makeCholeskyMatrix() mat.ReadOnlyMatrix {
+	m := mat.MakeSparse(4, 4)
 
 	m.SetValue(0, 0, 4.0)
 	m.SetValue(0, 1, -2.0)
@@ -54,8 +56,8 @@ func makeCholeskyMatrix() ReadOnlyMatrix {
 	return m
 }
 
-func makeCholeskyDecomposition() ReadOnlyMatrix {
-	m := MakeSquareDense(4)
+func makeCholeskyDecomposition() mat.ReadOnlyMatrix {
+	m := mat.MakeSquareDense(4)
 
 	m.SetValue(0, 0, 2.0)
 

@@ -1,20 +1,6 @@
 # InkMath
 
-Go module for mathematical and numerical calculations.
-
-## Publish New Version
-
-To publish a new version of this module, first tag it respecting [semantic versioning](https://semver.org/):
-
-```bash
-git tag vM.m.p
-```
-
-Then push the tag:
-
-```bash
-git push origin vM.m.p
-```
+Go module implementing matrices, vectors and linear equation system solvers.
 
 # Packages
 
